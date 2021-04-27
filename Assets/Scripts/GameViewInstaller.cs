@@ -7,6 +7,7 @@ public class GameViewInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.Bind<DicesManager>().AsSingle();
         Container.BindFactory<DicePresenter, DicePresenter.Factory>().FromComponentInNewPrefab(_dicePresenterPrefab);
     }
 }
