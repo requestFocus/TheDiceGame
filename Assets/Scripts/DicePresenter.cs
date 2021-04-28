@@ -1,12 +1,9 @@
-﻿using TMPro;
-using UnityEditor.U2D;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
 public class DicePresenter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private Sprite[] _dots;
     [SerializeField] private Image _diceImage;
 
@@ -15,7 +12,6 @@ public class DicePresenter : MonoBehaviour
     private void Awake()
     {
         _score = Random.Range(0, 6);
-        _scoreText.text = _score.ToString();
         _diceImage.sprite = _dots[_score];
     }
 

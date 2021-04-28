@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditorInternal;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -62,7 +60,7 @@ public class DicesManager
     {
         List<DicePresenter> dicePresenters = new List<DicePresenter>();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             DicePresenter dice = _dicePresenterFactory.Create();
             dicePresenters.Add(dice);
