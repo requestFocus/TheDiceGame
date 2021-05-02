@@ -25,6 +25,11 @@ public class DicePresenter : MonoBehaviour
         return _score + 1;
     }
 
+    public Image GetDiceImage()
+    {
+        return _diceImage;
+    }
+
     public class Factory : PlaceholderFactory<DicePresenter>
     {
     }

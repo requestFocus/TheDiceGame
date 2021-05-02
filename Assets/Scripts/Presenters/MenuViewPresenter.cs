@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuView : MonoBehaviour
+public class MenuViewPresenter : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _howToPlayButton;
@@ -22,8 +22,11 @@ public class MenuView : MonoBehaviour
 
     private void OnQuitClick()
     {
-        Debug.Log("Quitting");
-        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
     }
 
     private void OnHowToPlayClick()

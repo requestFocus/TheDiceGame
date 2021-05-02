@@ -9,6 +9,7 @@ public class GameViewInstaller : MonoInstaller
     {
         Container.Bind<DicesManager>().AsSingle();
         Container.Bind<GameManager>().AsSingle();
+        Container.Bind<DiceAmountChange>().AsSingle();
         Container.BindFactory<DicePresenter, DicePresenter.Factory>().FromComponentInNewPrefab(_dicePresenterPrefab);
     }
 }

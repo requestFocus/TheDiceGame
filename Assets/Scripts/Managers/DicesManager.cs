@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public class DicesManager
 {
     [Inject] private DicePresenter.Factory _dicePresenterFactory;
+    [Inject] private GameConfig _gameConfig;
 
     private List<Vector2> _occupied = new List<Vector2>();
 
@@ -60,7 +61,7 @@ public class DicesManager
     {
         List<DicePresenter> dicePresenters = new List<DicePresenter>();
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < _gameConfig.AmountOfDices; i++)
         {
             DicePresenter dice = _dicePresenterFactory.Create();
             dicePresenters.Add(dice);
