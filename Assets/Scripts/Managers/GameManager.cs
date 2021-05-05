@@ -1,6 +1,10 @@
+using System;
+
 public class GameManager
 {
-    public bool ValidateBet(int leftSliderValue, int rightSliderValue, int totalScore)
+    public event Action<int, int, int> DicesTossed;
+        
+    public bool IsWin(int leftSliderValue, int rightSliderValue, int totalScore)
     {
         if (totalScore >= leftSliderValue && totalScore <= rightSliderValue)
         {
@@ -8,5 +12,10 @@ public class GameManager
         }
 
         return false;
+    }
+
+    public void OnDicesTossed(int leftSliderValue, int rightSliderValue, int totalScore)
+    {
+        DicesTossed?.Invoke(leftSliderValue, rightSliderValue, totalScore);
     }
 }

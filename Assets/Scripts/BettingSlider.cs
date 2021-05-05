@@ -6,13 +6,20 @@ using Zenject;
 
 public class BettingSlider : MonoBehaviour
 {
-    [Inject] private GameConfig _gameConfig;
-    [Inject] private DiceAmountChange _diceAmountChange;
-    
+    private GameConfig _gameConfig;
+    private DiceAmountChange _diceAmountChange;
+
     [SerializeField] private MinMaxSlider _slider;
     [SerializeField] private Image _fillDot;
     [SerializeField] private Image _winningDot;
     [SerializeField] private RectTransform _backgroundRectTransform;
+
+    [Inject]
+    private void Construct(GameConfig gameConfig, DiceAmountChange diceAmountChange)
+    {
+        _gameConfig = gameConfig;
+        _diceAmountChange = diceAmountChange;
+    }
 
     public float SliderLeftValue => _slider.Values.minValue;
     public float SliderRightValue => _slider.Values.maxValue;
@@ -24,11 +31,7 @@ public class BettingSlider : MonoBehaviour
         UpdateSlider();
         ValidateNoRangeDot(SliderLeftValue, SliderRightValue);
 
-        _diceAmountChange.DiceAmountChanged += () =>
-        {
-            UpdateSlider();
-            DisableWinningDot();
-        }; 
+        _diceAmountChange.DiceAmountChanged += PrepareSliderAfterDiceAmountChange;
     }
 
     private void UpdateSlider()
@@ -38,39 +41,43 @@ public class BettingSlider : MonoBehaviour
         _slider.SetLimits(minSliderValue, maxSliderValue);
         _slider.SetValues(maxSliderValue / 2, maxSliderValue / 2 + 1);
     }
-    
+
     private void ValidateNoRangeDot(float leftValue, float rightValue)
     {
-        var doesMinEqualMax = (int)leftValue == (int)rightValue;
+        var doesMinEqualMax = (int) leftValue == (int) rightValue;
         _fillDot.gameObject.SetActive(doesMinEqualMax);
     }
 
-    public void UpdateWinningDot(int totalScore)
+    public void UpdateWinningDot(bool isWin, int totalScore)
     {
         _winningDot.gameObject.SetActive(true);
         Rect rect = _backgroundRectTransform.rect;
         RectTransform rectTransform = _winningDot.rectTransform;
-        
-        float xPositionOffset = rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices) 
-                        * (totalScore - _gameConfig.AmountOfDices) - rect.width / 2;
+
+        float xPositionOffset = rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices)
+                                * (totalScore - _gameConfig.AmountOfDices) - rect.width / 2;
         rectTransform.localPosition = new Vector2(xPositionOffset, 0);
-        
-        float xPivotOffset =  rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices) 
-                           * (totalScore - _gameConfig.AmountOfDices) / rect.width;
+
+        float xPivotOffset = rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices)
+                             * (totalScore - _gameConfig.AmountOfDices) / rect.width;
         rectTransform.pivot = new Vector2(xPivotOffset, rectTransform.pivot.y);
+
+        _winningDot.color = isWin ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
     }
 
-    public void DisableWinningDot()
+    private void DisableWinningDot()
     {
         _winningDot.gameObject.SetActive(false);
     }
 
-    // private void OnDestroy()
-    // {
-    //     _diceAmountChange.DiceAmountChanged -= () =>
-    //     {
-    //         UpdateSlider();
-    //         DisableWinningDot();
-    //     };  
-    // }
+    private void PrepareSliderAfterDiceAmountChange()
+    {
+        UpdateSlider();
+        DisableWinningDot();
+    }
+
+    private void OnDestroy()
+    {
+        _diceAmountChange.DiceAmountChanged -= PrepareSliderAfterDiceAmountChange;
+    }
 }

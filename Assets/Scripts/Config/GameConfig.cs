@@ -10,4 +10,10 @@ public class GameConfig : ScriptableObject
 
     public int MinAmountOfDices = 1;
     public int MaxAmountOfDices = 3;
+
+    public int BetBase = 1;
+    public int WinMultiplierForRangeOne = 4;
+    public int WinMultiplierForRangeTwo = 3;
+    public int WinMultiplierForRangeThree = 2;
+    public int WinMultiplierForRangeFour = 1;
 }

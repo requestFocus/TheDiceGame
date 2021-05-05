@@ -11,12 +11,7 @@ public class GameViewPresenter : MonoBehaviour
     [SerializeField] private Button _goBackButton;
     [SerializeField] private Button _helpButton;
     [SerializeField] private Button _tossDicesButton;
-    
     [SerializeField] private RectTransform _contentTransform;
-    
-    [SerializeField] private TextMeshProUGUI _totalScoreText;
-    [SerializeField] private TextMeshProUGUI _winIndicator2;
-    
     [SerializeField] private BettingSlider _bettingSlider;
     
     private DicesManager _dicesManager;
@@ -50,15 +45,19 @@ public class GameViewPresenter : MonoBehaviour
 
     private void TossDices()
     {
-        DeleteDices();
+        DeleteOldDices();
         ClearPreviouslyOccupiedPositions();
 
         _dicePresenters = _dicesManager.CreateDices();
         DistributeDices();
         AddDicesValues();
 
-        DetermineResult();
-        _bettingSlider.UpdateWinningDot(_totalScore);
+        _gameManager.OnDicesTossed((int)_bettingSlider.SliderLeftValue, (int)_bettingSlider.SliderRightValue, _totalScore);
+
+        bool isWin = _gameManager.IsWin((int) _bettingSlider.SliderLeftValue, (int) _bettingSlider.SliderRightValue,
+            _totalScore);
+        
+        _bettingSlider.UpdateWinningDot(isWin, _totalScore);
     }
 
     private void AddDicesValues()
@@ -68,8 +67,6 @@ public class GameViewPresenter : MonoBehaviour
         {
             _totalScore += dice.GetScore();
         }
-
-        _totalScoreText.text = _totalScore.ToString();
     }
 
     private void DistributeDices()
@@ -81,14 +78,8 @@ public class GameViewPresenter : MonoBehaviour
             dicePresenter.transform.localPosition
                 = _dicesManager.GetUniqueRandomPosition(rect.width, rect.height, dicePresenter.GetDimensions());
             dicePresenter.GetDiceImage().transform.Rotate(0, 0, Random.Range(0, 360)); //         MOVE TO DICES MANAGER?
-            dicePresenter.GetDiceImage().transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InBounce).From(Vector3.zero);
+            dicePresenter.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InBounce).From(Vector3.zero);
         }
-    }
-
-    private void DetermineResult()
-    {
-        bool isWin = _gameManager.ValidateBet((int)_bettingSlider.SliderLeftValue, (int)_bettingSlider.SliderRightValue, _totalScore);
-        _winIndicator2.text = isWin ? "WON!" : "LOST.";
     }
 
     private void ClearPreviouslyOccupiedPositions()
@@ -96,7 +87,7 @@ public class GameViewPresenter : MonoBehaviour
         _dicesManager.ClearOccupiedPositions();
     }
 
-    private void DeleteDices()
+    private void DeleteOldDices()
     {
         for (int i = 0; i < _contentTransform.childCount; i++)
         {

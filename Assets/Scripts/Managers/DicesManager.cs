@@ -5,13 +5,19 @@ using Random = UnityEngine.Random;
 
 public class DicesManager
 {
-    [Inject] private DicePresenter.Factory _dicePresenterFactory;
-    [Inject] private GameConfig _gameConfig;
+    private DicePresenter.Factory _dicePresenterFactory;
+    private GameConfig _gameConfig;
 
     private List<Vector2> _occupied = new List<Vector2>();
 
     private float _x;
     private float _y;
+
+    private DicesManager(DicePresenter.Factory factory, GameConfig gameConfig)
+    {
+        _dicePresenterFactory = factory;
+        _gameConfig = gameConfig;
+    }
 
     public Vector2 GetUniqueRandomPosition(float contentWidth, float contentHeight, float[] dimensions)
     {

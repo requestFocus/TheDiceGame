@@ -1,9 +1,13 @@
 using System;
-using Zenject;
 
 public class DiceAmountChange
 {
-    [Inject] private GameConfig _gameConfig;
+    private GameConfig _gameConfig;
+
+    private DiceAmountChange(GameConfig gameConfig)
+    {
+        _gameConfig = gameConfig;
+    }
     
     public event Action DiceAmountChanged;
 
