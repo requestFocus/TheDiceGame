@@ -4,6 +4,7 @@ using Zenject;
 public class GameViewInstaller : MonoInstaller
 {
     [SerializeField] private DicePresenter _dicePresenterPrefab;
+    [SerializeField] private GenericWindow _genericWindowPrefab;
 
     public override void InstallBindings()
     {
@@ -13,5 +14,6 @@ public class GameViewInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<Bank>().AsSingle();
         
         Container.BindFactory<DicePresenter, DicePresenter.Factory>().FromComponentInNewPrefab(_dicePresenterPrefab);
+        Container.BindFactory<GenericWindow, GenericWindow.Factory>().FromComponentInNewPrefab(_genericWindowPrefab);
     }
 }

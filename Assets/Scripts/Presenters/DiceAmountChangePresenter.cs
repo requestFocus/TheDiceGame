@@ -11,9 +11,11 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private DiceAmountChange _diceAmountChange;
     private DicePresenter.Factory _dicePresenterFactory;
 
+    #pragma warning disable
     [SerializeField] private Button _addDiceButton;
     [SerializeField] private Button _removeDiceButton;
     [SerializeField] private RectTransform _diceContainer;
+    #pragma warning restore
 
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 

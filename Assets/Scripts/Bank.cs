@@ -41,14 +41,14 @@ public class Bank : IInitializable, IDisposable
 
         switch (range)
         {
+            case 0:
+                return _gameConfig.BetBase * _gameConfig.WinMultiplierForRangeZero * _gameConfig.AmountOfDices;
             case 1:
                 return _gameConfig.BetBase * _gameConfig.WinMultiplierForRangeOne * _gameConfig.AmountOfDices;
             case 2:
                 return _gameConfig.BetBase * _gameConfig.WinMultiplierForRangeTwo * _gameConfig.AmountOfDices;
             case 3:
                 return _gameConfig.BetBase * _gameConfig.WinMultiplierForRangeThree * _gameConfig.AmountOfDices;
-            case 4:
-                return _gameConfig.BetBase * _gameConfig.WinMultiplierForRangeFour * _gameConfig.AmountOfDices;
             default:
                 return 0;
         } 
@@ -56,13 +56,13 @@ public class Bank : IInitializable, IDisposable
 
     public int GetBalance()
     {
-        return PlayerPrefs.GetInt("Balance", 200);
+        return PlayerPrefs.GetInt("Balance");
     }
     
     private void MakeBet(int arg1, int arg2, int arg3)
     {
         var currentBalance = PlayerPrefs.GetInt("Balance", 200);
-        var newBalance = currentBalance - (_gameConfig.BetBase * _gameConfig.AmountOfDices);
+        var newBalance = currentBalance - _gameConfig.BetBase;
         PlayerPrefs.SetInt("Balance", newBalance);
     }
 

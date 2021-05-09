@@ -62,7 +62,7 @@ public class BettingSlider : MonoBehaviour
                              * (totalScore - _gameConfig.AmountOfDices) / rect.width;
         rectTransform.pivot = new Vector2(xPivotOffset, rectTransform.pivot.y);
 
-        _winningDot.color = isWin ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
+        _winningDot.color = isWin ? new Color(0, 255, 0, 1) : new Color(255, 0, 0, 1);
     }
 
     private void DisableWinningDot()

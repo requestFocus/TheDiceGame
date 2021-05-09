@@ -8,39 +8,52 @@ using Zenject;
 
 public class GameViewPresenter : MonoBehaviour
 {
-    [SerializeField] private Button _goBackButton;
-    [SerializeField] private Button _helpButton;
-    [SerializeField] private Button _tossDicesButton;
+    [SerializeField] private GenericButton _goBackButton;
+    [SerializeField] private GenericButton _helpButton;
+    [SerializeField] private GenericButton _tossDicesButton;
     [SerializeField] private RectTransform _contentTransform;
     [SerializeField] private BettingSlider _bettingSlider;
     
     private DicesManager _dicesManager;
     private GameManager _gameManager;
+    private ButtonHelper _buttonHelper;
+    private GenericWindow.Factory _windowFactory;
     
     private List<DicePresenter> _dicePresenters;
     private int _totalScore;
 
     [Inject]
-    private void Construct(DicesManager dicesManager, GameManager gameManager)
+    private void Construct(DicesManager dicesManager, GameManager gameManager, ButtonHelper buttonHelper, GenericWindow.Factory windowFactory)
     {
         _dicesManager = dicesManager;
         _gameManager = gameManager;
+        _buttonHelper = buttonHelper;
+        _windowFactory = windowFactory;
     }
 
     private void Start()
     {
-        _goBackButton.onClick.AddListener(GoBack);
-        _helpButton.onClick.AddListener(ShowHelp);
-        _tossDicesButton.onClick.AddListener(TossDices);
+        _goBackButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_goBackButton, GoBack));
+        _goBackButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_goBackButton, () => { }));
+
+        _helpButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_helpButton, ShowHelp));
+        _helpButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_helpButton, () => { }));
+        
+        _tossDicesButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_tossDicesButton, TossDices));
     }
 
     private void GoBack()
     {
-        SceneManager.LoadScene("Scenes/Menu");
+        SceneManager.LoadScene("Scenes/MenuScene");
     }
     
     private void ShowHelp()
     {
+        // PlayerPrefs.DeleteAll();
+        var window = _windowFactory.Create();
+        window.transform.localScale = Vector3.one;
+        window.transform.SetParent(transform);
+        window.transform.localPosition = new Vector3(0, 0, 0);
     }
 
     private void TossDices()
@@ -102,7 +115,12 @@ public class GameViewPresenter : MonoBehaviour
     
     private void OnDestroy()
     {
-        _goBackButton.onClick.RemoveListener(GoBack);
-        _tossDicesButton.onClick.RemoveListener(TossDices);
+        _goBackButton.onClick.RemoveAllListeners();
+        _goBackButton.onLongPress.RemoveAllListeners();
+        
+        _helpButton.onClick.RemoveAllListeners();
+        _helpButton.onLongPress.RemoveAllListeners();
+        
+        _tossDicesButton.onClick.RemoveAllListeners();
     }
 }
