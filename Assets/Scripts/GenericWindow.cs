@@ -11,7 +11,7 @@ public class GenericWindow : MonoBehaviour
 
     private void Start()
     {
-        _text.text = "kaligulamikrus";
+        _text.text = "generic window";
         transform.localScale = Vector3.one;
         
         _closeButton.onClick.AddListener(() => Destroy(gameObject));

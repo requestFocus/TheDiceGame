@@ -56,7 +56,7 @@ public class BettingSlider : MonoBehaviour
 
         float xPositionOffset = rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices)
                                 * (totalScore - _gameConfig.AmountOfDices) - rect.width / 2;
-        rectTransform.localPosition = new Vector2(xPositionOffset, 0);
+        rectTransform.localPosition = new Vector2(xPositionOffset, rectTransform.localPosition.y);
 
         float xPivotOffset = rect.width / (_gameConfig.GetMaxSliderValue - _gameConfig.AmountOfDices)
                              * (totalScore - _gameConfig.AmountOfDices) / rect.width;
