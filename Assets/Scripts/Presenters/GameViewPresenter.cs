@@ -51,9 +51,8 @@ public class GameViewPresenter : MonoBehaviour
     {
         // PlayerPrefs.DeleteAll();
         var window = _windowFactory.Create();
-        window.transform.localScale = Vector3.one;
         window.transform.SetParent(transform);
-        window.transform.localPosition = new Vector3(0, 0, 0);
+        window.transform.DOScale(Vector3.one, 0.3f).From(Vector3.zero);
     }
 
     private void TossDices()

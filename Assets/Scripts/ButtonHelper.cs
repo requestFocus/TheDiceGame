@@ -11,16 +11,17 @@ public class ButtonHelper
     private Sequence _onButtonLongPressAnimation;
 
     private readonly float _stepDuration = 0.3f;
-    private readonly float _interval = 1f;
+    private readonly float _interval = 2f;
+
+    private float _skipTo;
 
     public void OnButtonClick(GenericButton button, Action callback)
     {
-        // if (_onButtonLongPressAnimation.IsActive())
-        // {
-        //     callback?.Invoke();
-        //     _onButtonLongPressAnimation.Kill();
-        //     return;
-        // }
+        if (_onButtonLongPressAnimation.IsActive())
+        {
+            _onButtonLongPressAnimation.Goto(_skipTo, true);
+            return;
+        }
 
         button.interactable = false;
 
@@ -31,8 +32,8 @@ public class ButtonHelper
         foreach (var image in images)
         {
             _onButtonClickAnimation.Insert(0,
-                    image.transform.DORotate(Vector3.forward * -180f, 0.3f).SetEase(Ease.InSine))
-                .Insert(0.3f, image.transform.DORotate(Vector3.forward * -360f, 0.3f).SetEase(Ease.OutSine));
+                    image.transform.DORotate(Vector3.forward * -180f, _stepDuration).SetEase(Ease.InSine))
+                .Insert(_stepDuration, image.transform.DORotate(Vector3.forward * -360f, _stepDuration).SetEase(Ease.OutSine));
         }
 
         _onButtonClickAnimation.Play().OnComplete(() =>
@@ -44,7 +45,10 @@ public class ButtonHelper
 
     public void OnButtonLongPress(GenericButton button, Action callback)
     {
-        button.interactable = false;
+        if (_onButtonLongPressAnimation.IsActive())
+        {
+            return;
+        }
 
         List<float> entryAlpha = new List<float>();
         Image[] images = button.GetComponentsInChildren<Image>();
@@ -59,7 +63,11 @@ public class ButtonHelper
         }
 
         _onButtonLongPressAnimation.AppendCallback(() => hint.gameObject.SetActive(true))
-            .AppendInterval(_interval)
+            .AppendInterval(_interval);
+
+        _skipTo = _onButtonLongPressAnimation.Duration() - 0.01f;
+
+        _onButtonLongPressAnimation
             .AppendCallback(() => hint.gameObject.SetActive(false));
 
         for (var i = 0; i < images.Length; i++)
@@ -70,7 +78,6 @@ public class ButtonHelper
         _onButtonLongPressAnimation.Play().OnComplete(() =>
         {
             callback?.Invoke();
-            button.interactable = true;
         }).OnKill(() => _onButtonLongPressAnimation = null);
     }
 }
