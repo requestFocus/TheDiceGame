@@ -58,7 +58,7 @@ public class MenuViewPresenter : MonoBehaviour
     {
         _blinkAnimation = DOTween.Sequence();
         _blinkAnimation
-            .Append(_blink.transform.DOMoveX(Screen.width, 1f).From(0))
+            .Append(_blink.transform.DOLocalMoveX(Screen.width / 2f, 1f).From(- Screen.width / 2f))
             .AppendInterval(3.0f)
             .Play().SetLoops(-1);
     }
