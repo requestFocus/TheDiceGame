@@ -6,18 +6,23 @@ using Zenject;
 
 public class SettingNewBankBalancePresenter : MonoBehaviour
 {
+#pragma warning disable
     [SerializeField] private GenericButton _playButton;
     [SerializeField] private GenericButton _goBackButton;
     [SerializeField] private TextMeshProUGUI _newBankBalance;
-
+#pragma warning restore
+    
     private ButtonHelper _buttonHelper;
+    private Bank _bank;
+    
     private int _newBankBalanceAmount;
     private Sequence _drawingBalanceAnimation;
 
     [Inject]
-    private void Construct(ButtonHelper buttonHelper)
+    private void Construct(ButtonHelper buttonHelper, Bank bank)
     {
         _buttonHelper = buttonHelper;
+        _bank = bank;
     }
 
     private void Start()
@@ -27,7 +32,6 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
         
         _goBackButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_goBackButton, OnQuitClick));
         _goBackButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_goBackButton, () => { }));
-
         
         SetUpNewBankBalance();
     }
@@ -68,6 +72,7 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
 
     private void OnPlayClick()
     {
+        _bank.UpdateBetValue(1);
         SceneManager.LoadScene("Scenes/GameplayScene");
     }
 

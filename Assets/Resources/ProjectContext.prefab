@@ -73,3 +73,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd9c970196a849b9a8aec9751455be38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _overlayManager: {fileID: 1182727936530752831, guid: cc8b8d200fdb245e2b7602cb1b0f6721,
+    type: 3}

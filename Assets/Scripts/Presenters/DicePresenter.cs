@@ -4,9 +4,11 @@ using Zenject;
 
 public class DicePresenter : MonoBehaviour
 {
+#pragma warning disable
     [SerializeField] private Sprite[] _dots;
     [SerializeField] private Image _diceImage;
-
+#pragma warning restore
+    
     private int _score;
     
     private void Awake()

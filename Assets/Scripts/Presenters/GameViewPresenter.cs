@@ -1,34 +1,37 @@
 using System.Collections.Generic;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Zenject;
 
 public class GameViewPresenter : MonoBehaviour
 {
+#pragma warning disable
     [SerializeField] private GenericButton _goBackButton;
     [SerializeField] private GenericButton _helpButton;
     [SerializeField] private GenericButton _tossDicesButton;
     [SerializeField] private RectTransform _contentTransform;
-    [SerializeField] private BettingSlider _bettingSlider;
+    [SerializeField] private BettingSliderPresenter _bettingSliderPresenter;
+#pragma warning restore
     
     private DicesManager _dicesManager;
     private GameManager _gameManager;
     private ButtonHelper _buttonHelper;
-    private GenericWindow.Factory _windowFactory;
+    private UiManager _uiManager;
+    private BettingSlider _bettingSlider;
     
     private List<DicePresenter> _dicePresenters;
     private int _totalScore;
 
     [Inject]
-    private void Construct(DicesManager dicesManager, GameManager gameManager, ButtonHelper buttonHelper, GenericWindow.Factory windowFactory)
+    private void Construct(DicesManager dicesManager, GameManager gameManager, ButtonHelper buttonHelper,
+        UiManager uiManager, BettingSlider bettingSlider)
     {
         _dicesManager = dicesManager;
         _gameManager = gameManager;
         _buttonHelper = buttonHelper;
-        _windowFactory = windowFactory;
+        _uiManager = uiManager;
+        _bettingSlider = bettingSlider;
     }
 
     private void Start()
@@ -49,10 +52,7 @@ public class GameViewPresenter : MonoBehaviour
     
     private void ShowHelp()
     {
-        // PlayerPrefs.DeleteAll();
-        var window = _windowFactory.Create();
-        window.transform.SetParent(transform);
-        window.transform.DOScale(Vector3.one, 0.3f).From(Vector3.zero);
+        var howToPlayWindow = _uiManager.ShowWindow<HowToPlayWindow>();
     }
 
     private void TossDices()
@@ -62,14 +62,20 @@ public class GameViewPresenter : MonoBehaviour
 
         _dicePresenters = _dicesManager.CreateDices();
         DistributeDices();
+        
         AddDicesValues();
 
-        _gameManager.OnDicesTossed((int)_bettingSlider.SliderLeftValue, (int)_bettingSlider.SliderRightValue, _totalScore);
+        _gameManager.OnDicesToss(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
 
-        bool isWin = _gameManager.IsWin((int) _bettingSlider.SliderLeftValue, (int) _bettingSlider.SliderRightValue,
-            _totalScore);
+        bool isWin = _gameManager.IsWin(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
+        _bettingSliderPresenter.UpdateWinningDot(isWin, _totalScore);
+
+        _gameManager.OnTurnEnd();
         
-        _bettingSlider.UpdateWinningDot(isWin, _totalScore);
+        if (!CanContinue())
+        {
+            var gameOverWindow = _uiManager.ShowWindow<GameOverWindow>();
+        }
     }
 
     private void AddDicesValues()
@@ -110,6 +116,11 @@ public class GameViewPresenter : MonoBehaviour
                 Destroy(diceTransform.gameObject);
             });
         }
+    }
+
+    private bool CanContinue()
+    {
+        return PlayerPrefs.GetInt("Balance") > 0;
     }
     
     private void OnDestroy()

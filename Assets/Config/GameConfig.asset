@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d0ed5dc0154af0a250f96d64034e8b, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  AmountOfDices: 1
+  AmountOfDices: 3
   MinAmountOfDices: 1
   MaxAmountOfDices: 3
-  BetBase: 1
-  WinMultiplierForRangeOne: 4
-  WinMultiplierForRangeTwo: 3
-  WinMultiplierForRangeThree: 2
-  WinMultiplierForRangeFour: 1
+  BetBase: 200
+  WinMultiplierForRangeZero: 4
+  WinMultiplierForRangeOne: 3
+  WinMultiplierForRangeTwo: 2
+  WinMultiplierForRangeThree: 1

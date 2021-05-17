@@ -6,11 +6,13 @@ using Zenject;
 
 public class MenuViewPresenter : MonoBehaviour
 {
+#pragma warning disable
     [SerializeField] private Image _blink;
     [SerializeField] private GenericButton _playButton;
     [SerializeField] private GenericButton _setUpNewBalanceButton;
     [SerializeField] private GenericButton _quitButton;
-
+#pragma warning restore
+    
     private ButtonHelper _buttonHelper;
     private Sequence _blinkAnimation;
 
@@ -31,7 +33,7 @@ public class MenuViewPresenter : MonoBehaviour
         _setUpNewBalanceButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_setUpNewBalanceButton, OnSetUpNewBankClick));
         _setUpNewBalanceButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_setUpNewBalanceButton, () => { }));
 
-        _playButton.gameObject.SetActive(PlayerPrefs.GetInt("Balance") != 0);
+        _playButton.gameObject.SetActive(PlayerPrefs.GetInt("Balance") > 0);
         AnimateBlink();
     }
 

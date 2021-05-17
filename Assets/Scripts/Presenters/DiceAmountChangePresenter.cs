@@ -8,7 +8,7 @@ using Zenject;
 public class DiceAmountChangePresenter : MonoBehaviour
 {
     private GameConfig _gameConfig;
-    private DiceAmountChange _diceAmountChange;
+    private DiceAmountChange _model;
     private DicePresenter.Factory _dicePresenterFactory;
 
     #pragma warning disable
@@ -20,10 +20,10 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     [Inject]
-    private void Construct(GameConfig gameConfig, DiceAmountChange diceAmountChange, DicePresenter.Factory dicePresenterFactory)
+    private void Construct(GameConfig gameConfig, DiceAmountChange model, DicePresenter.Factory dicePresenterFactory)
     {
         _gameConfig = gameConfig;
-        _diceAmountChange = diceAmountChange;
+        _model = model;
         _dicePresenterFactory = dicePresenterFactory;
     }
     
@@ -42,9 +42,9 @@ public class DiceAmountChangePresenter : MonoBehaviour
     {
         if (_gameConfig.AmountOfDices < _gameConfig.MaxAmountOfDices)
         {
-            _diceAmountChange.AddDice();
+            _model.AddDice();
             CreateDicePresenter();
-            UpdateAllDicePresenters();
+            UpdateAllOffBoardDicePresenters();
         }
     }
 
@@ -52,9 +52,9 @@ public class DiceAmountChangePresenter : MonoBehaviour
     {
         if (_gameConfig.AmountOfDices > _gameConfig.MinAmountOfDices)
         {
-            _diceAmountChange.RemoveDice();
+            _model.RemoveDice();
             DestroyDicePresenter();
-            UpdateAllDicePresenters();
+            UpdateAllOffBoardDicePresenters();
         }
     }
 
@@ -76,7 +76,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
         _dicePresenters.RemoveAt(_dicePresenters.Count - 1);
     }
 
-    private void UpdateAllDicePresenters()
+    private void UpdateAllOffBoardDicePresenters()
     {
         var layoutGroup = _diceContainer.GetComponent<HorizontalLayoutGroup>();
         switch (_gameConfig.AmountOfDices)

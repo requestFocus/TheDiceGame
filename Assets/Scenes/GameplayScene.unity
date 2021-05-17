@@ -292,7 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dicePresenterPrefab: {fileID: 1771399828054130045, guid: 32445922cad1849e7a796d5d40f86f7b,
     type: 3}
-  _genericWindowPrefab: {fileID: 1913568285044573807, guid: 9c2dc48282b30424480602cabbb85a5a,
+  _uiManager: {fileID: 1182727936530752831, guid: cc8b8d200fdb245e2b7602cb1b0f6721,
     type: 3}
 --- !u!114 &210000779
 MonoBehaviour:
@@ -719,7 +719,7 @@ Canvas:
   m_GameObject: {fileID: 789379538}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 948826973}
   m_PlaneDistance: 50
   m_PixelPerfect: 0
@@ -991,7 +991,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -123.140015, y: -632.81}
+  m_AnchoredPosition: {x: -123.13989, y: -632.81}
   m_SizeDelta: {x: 144.40967, y: 171.76733}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1014476001
@@ -1358,11 +1358,11 @@ RectTransform:
   m_Father: {fileID: 2103145393}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -48.600098}
-  m_SizeDelta: {x: 1831.0237, y: 2111.1333}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 605.1}
+  m_SizeDelta: {x: 1831.0237, y: -1311.2222}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1880655402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1680,7 +1680,7 @@ MonoBehaviour:
   _helpButton: {fileID: 251280941}
   _tossDicesButton: {fileID: 1014476001}
   _contentTransform: {fileID: 1177499875}
-  _bettingSlider: {fileID: 1371766224}
+  _bettingSliderPresenter: {fileID: 1371766224}
 --- !u!1001 &23535281671173059
 PrefabInstance:
   m_ObjectHideFlags: 0
