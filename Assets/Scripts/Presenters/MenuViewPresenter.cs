@@ -11,15 +11,19 @@ public class MenuViewPresenter : MonoBehaviour
     [SerializeField] private GenericButton _playButton;
     [SerializeField] private GenericButton _setUpNewBalanceButton;
     [SerializeField] private GenericButton _quitButton;
+    [SerializeField] private GenericButton _helpButton;
 #pragma warning restore
     
     private ButtonHelper _buttonHelper;
+    private UiManager _uiManager;
+    
     private Sequence _blinkAnimation;
 
     [Inject]
-    private void Construct(ButtonHelper buttonHelper)
+    private void Construct(ButtonHelper buttonHelper, UiManager uiManager)
     {
         _buttonHelper = buttonHelper;
+        _uiManager = uiManager;
     }
     
     private void Start()
@@ -32,6 +36,9 @@ public class MenuViewPresenter : MonoBehaviour
         
         _setUpNewBalanceButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_setUpNewBalanceButton, OnSetUpNewBankClick));
         _setUpNewBalanceButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_setUpNewBalanceButton, () => { }));
+        
+        _helpButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_helpButton, ShowHelp));
+        _helpButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_helpButton, () => { }));
 
         _playButton.gameObject.SetActive(PlayerPrefs.GetInt("Balance") > 0);
         AnimateBlink();
@@ -55,6 +62,11 @@ public class MenuViewPresenter : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/SettingNewBankScene");
     }
+    
+    private void ShowHelp()
+    {
+        var howToPlayWindow = _uiManager.ShowWindow<HowToPlayWindow>();
+    }
 
     private void AnimateBlink()
     {
@@ -75,6 +87,9 @@ public class MenuViewPresenter : MonoBehaviour
         
         _setUpNewBalanceButton.onClick.RemoveAllListeners();
         _setUpNewBalanceButton.onLongPress.RemoveAllListeners();
+        
+        _helpButton.onClick.RemoveAllListeners();
+        _helpButton.onLongPress.RemoveAllListeners();
 
         if (_blinkAnimation.IsPlaying())
         {
