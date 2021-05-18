@@ -42,8 +42,7 @@ public class BettingSliderPresenter : MonoBehaviour
         float minSliderValue = _gameConfig.AmountOfDices;
         float maxSliderValue = _gameConfig.GetMaxSliderValue;
         _slider.SetLimits(minSliderValue, maxSliderValue);
-        // _slider.SetValues(maxSliderValue / 2, maxSliderValue / 2 + 1);
-        _slider.SetValues(minSliderValue, maxSliderValue);
+        _slider.SetValues((maxSliderValue - minSliderValue) / 2, (maxSliderValue - minSliderValue) / 2 + 2);
     }
 
     private void ValidateNoRangeDot(float leftValue, float rightValue)

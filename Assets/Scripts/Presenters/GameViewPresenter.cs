@@ -68,7 +68,8 @@ public class GameViewPresenter : MonoBehaviour
         _gameManager.OnDicesToss(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
 
         bool isWin = _gameManager.IsWin(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
-        _bettingSliderPresenter.UpdateWinningDot(isWin, _totalScore);
+        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(_bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
+        _bettingSliderPresenter.UpdateWinningDot(isWin & isWithinWinningRange, _totalScore);
 
         _gameManager.OnTurnEnd();
         

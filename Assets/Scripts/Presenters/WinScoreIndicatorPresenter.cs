@@ -36,13 +36,15 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
     private void UpdateWinIndicatorColor(int totalScore, int leftSliderValue, int rightSliderValue)
     {
         bool isWin = _gameManager.IsWin(leftSliderValue, rightSliderValue, totalScore);
-        _winIndicator.color = isWin ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
+        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(leftSliderValue, rightSliderValue);
+        _winIndicator.color = isWin & isWithinWinningRange ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
     }
     
     private void UpdateTotalScoreColor(int totalScore, int leftSliderValue, int rightSliderValue)
     {
         bool isWin = _gameManager.IsWin(totalScore, leftSliderValue, rightSliderValue);
-        _totalScoreText.color = isWin ? new Color(0, 0.3f, 0, 0.25f) : new Color(0.3f, 0, 0, 0.25f);
+        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(leftSliderValue, rightSliderValue);
+        _totalScoreText.color = isWin & isWithinWinningRange ? new Color(0, 0.3f, 0, 0.25f) : new Color(0.3f, 0, 0, 0.25f);
     }
 
     private void UpdateTotalScoreText(int totalScore)

@@ -80,6 +80,17 @@ public class Bank : IInitializable, IDisposable
         _gameConfig.BetBase = betAmount;
     }
     
+    public void UpdateBetValue(float value)
+    {
+        int betAmount = (int) value;
+        if (betAmount > PlayerPrefs.GetInt("Balance"))
+        {
+            betAmount = PlayerPrefs.GetInt("Balance");
+        }
+        
+        _gameConfig.BetBase = betAmount;
+    }
+    
     private void DeductBet(int arg1, int arg2, int arg3)
     {
         var currentBalance = PlayerPrefs.GetInt("Balance");

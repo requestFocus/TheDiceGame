@@ -265,7 +265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 4027258905886689481}
   _text: {fileID: 6387705812800053303}
-  _withOverlay: 0
+  _withOverlay: 1
 --- !u!1 &1608162544653025295
 GameObject:
   m_ObjectHideFlags: 0

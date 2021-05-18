@@ -1,5 +1,5 @@
 using System;
-using UnityEngine.UI;
+using Zenject;
 
 public class GameManager
 {
@@ -7,6 +7,8 @@ public class GameManager
     public event Action DicesTossed;
     public event Action<int, int> SliderUpdated;
     public event Action DiceAmountChanged;
+
+    [Inject] private GameConfig _gameConfig;
         
     public bool IsWin(int totalScore, int leftSliderValue, int rightSliderValue)
     {
@@ -16,6 +18,11 @@ public class GameManager
         }
 
         return false;
+    }
+
+    public bool IsWithinWiningRange(int leftSliderValue, int rightSliderValue)
+    {
+        return rightSliderValue - leftSliderValue <= _gameConfig.WidestWinningRange;
     }
 
     public void OnDicesToss(int totalScore, int leftSliderValue, int rightSliderValue)
