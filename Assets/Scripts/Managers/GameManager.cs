@@ -8,8 +8,10 @@ public class GameManager
     public event Action<int, int> SliderUpdated;
     public event Action DiceAmountChanged;
 
+#pragma warning disable CS0649
     [Inject] private GameConfig _gameConfig;
-        
+#pragma warning restore CS0649        
+    
     public bool IsWin(int totalScore, int leftSliderValue, int rightSliderValue)
     {
         if (totalScore >= leftSliderValue && totalScore <= rightSliderValue)

@@ -10,9 +10,6 @@ public class DicesManager
 
     private List<Vector2> _occupied = new List<Vector2>();
 
-    private float _x;
-    private float _y;
-
     private DicesManager(DicePresenter.Factory factory, GameConfig gameConfig)
     {
         _dicePresenterFactory = factory;
@@ -21,16 +18,19 @@ public class DicesManager
 
     public Vector2 GetUniqueRandomPosition(float contentWidth, float contentHeight, float[] dimensions)
     {
+        float x;
+        float y;
+        
         do
         {
-            _x = Random.Range(-contentWidth/2 + dimensions[0], contentWidth/2 - dimensions[0]);
-            _y = Random.Range(-contentHeight/2 + dimensions[1], contentHeight/2 - dimensions[1]);
+            x = Random.Range(-contentWidth/2 + dimensions[0], contentWidth/2 - dimensions[0]);
+            y = Random.Range(-contentHeight/2 + dimensions[1], contentHeight/2 - dimensions[1]);
         }
-        while (IsPositionUnavailable(_x, _y, dimensions));
+        while (IsPositionUnavailable(x, y, dimensions));
         
-        _occupied.Add(new Vector2(_x, _y));
+        _occupied.Add(new Vector2(x, y));
 
-        return new Vector2(_x, _y);
+        return new Vector2(x, y);
     }
 
     private bool IsPositionUnavailable(float x, float y, float[] dimensions)

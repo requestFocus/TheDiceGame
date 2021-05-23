@@ -1,25 +1,30 @@
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class GameViewPresenter : MonoBehaviour
 {
-#pragma warning disable
+#pragma warning disable CS0649
     [SerializeField] private GenericButton _goBackButton;
     [SerializeField] private GenericButton _helpButton;
     [SerializeField] private GenericButton _tossDicesButton;
     [SerializeField] private RectTransform _contentTransform;
     [SerializeField] private BettingSliderPresenter _bettingSliderPresenter;
-#pragma warning restore
-    
+#pragma warning restore CS0649
+
     private DicesManager _dicesManager;
     private GameManager _gameManager;
     private ButtonHelper _buttonHelper;
     private UiManager _uiManager;
     private BettingSlider _bettingSlider;
-    
+
     private List<DicePresenter> _dicePresenters;
     private int _totalScore;
 
@@ -41,7 +46,7 @@ public class GameViewPresenter : MonoBehaviour
 
         _helpButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_helpButton, ShowHelp));
         _helpButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_helpButton, () => { }));
-        
+
         _tossDicesButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_tossDicesButton, TossDices));
     }
 
@@ -49,26 +54,29 @@ public class GameViewPresenter : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/MenuScene");
     }
-    
+
     private void ShowHelp()
     {
         var howToPlayWindow = _uiManager.ShowWindow<HowToPlayWindow>();
     }
 
-    private void TossDices()
+    private async void TossDices()
     {
         DeleteOldDices();
         ClearPreviouslyOccupiedPositions();
 
         _dicePresenters = _dicesManager.CreateDices();
-        DistributeDices();
-        
+        await DistributeDices();
+
         AddDicesValues();
 
-        _gameManager.OnDicesToss(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
+        _gameManager.OnDicesToss(_totalScore, _bettingSlider.GetLeftSliderValue(),
+            _bettingSlider.GetRightSliderValue());
 
-        bool isWin = _gameManager.IsWin(_totalScore, _bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
-        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(_bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
+        bool isWin = _gameManager.IsWin(_totalScore, _bettingSlider.GetLeftSliderValue(),
+            _bettingSlider.GetRightSliderValue());
+        bool isWithinWinningRange =
+            _gameManager.IsWithinWiningRange(_bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
         _bettingSliderPresenter.UpdateWinningDot(isWin & isWithinWinningRange, _totalScore);
 
         _gameManager.OnTurnEnd();
@@ -84,23 +92,44 @@ public class GameViewPresenter : MonoBehaviour
         _totalScore = 0;
         foreach (var dice in _dicePresenters)
         {
-            _totalScore += dice.GetScore();
+            _totalScore += dice.GetDiceValue();
         }
     }
 
-    private void DistributeDices()
+    // TODO: MOVE TO DICES MANAGER
+    private async UniTask DistributeDices()
     {
-        Rect rect = _contentTransform.rect;
+        Rect contentRect = _contentTransform.rect;
+        Sequence sequence = DOTween.Sequence();
+        
         foreach (DicePresenter dicePresenter in _dicePresenters)
         {
-            dicePresenter.transform.SetParent(_contentTransform);
-            dicePresenter.transform.localPosition
-                = _dicesManager.GetUniqueRandomPosition(rect.width, rect.height, dicePresenter.GetDimensions());
-            dicePresenter.GetDiceImage().transform.Rotate(0, 0, Random.Range(0, 360)); //         MOVE TO DICES MANAGER?
-            dicePresenter.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InBounce).From(Vector3.zero);
-        }
-    }
+            var targetDotsAmount = dicePresenter.GetGeneratedRandomId();
+            Transform diceTransform = dicePresenter.transform;
 
+            Vector2 commonStartingPosition = new Vector3(contentRect.width, -contentRect.height);
+            Vector2 uniqueRandomLandingPosition = _dicesManager.GetUniqueRandomPosition(contentRect.width,
+                contentRect.height, dicePresenter.GetDimensions());
+            
+            diceTransform.SetParent(_contentTransform, true);
+            diceTransform.localScale = Vector3.one;
+            diceTransform.localPosition = commonStartingPosition;
+
+            float angle = Mathf.Atan2(commonStartingPosition.y - uniqueRandomLandingPosition.y, commonStartingPosition.x - uniqueRandomLandingPosition.x) * Mathf.Rad2Deg;
+            dicePresenter.GetDiceImage().transform.rotation = Quaternion.Euler (new Vector3(0f,0f,angle));
+            dicePresenter.GetAnimatedSidesContainerTransform().transform.rotation = Quaternion.Euler (new Vector3(0f,0f,angle));
+
+            sequence = DOTween.Sequence()
+                .Append(diceTransform.DOLocalMove(uniqueRandomLandingPosition, 1.2f)) // SET EASE
+                .InsertCallback(0f, () =>
+                {
+                    dicePresenter.AnimateDiceMovement(targetDotsAmount);
+                });
+        }
+
+        await sequence.Play().AsyncWaitForCompletion();
+    }
+    
     private void ClearPreviouslyOccupiedPositions()
     {
         _dicesManager.ClearOccupiedPositions();

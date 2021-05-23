@@ -1,16 +1,15 @@
 ﻿using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public abstract class GenericWindow : MonoBehaviour
 {
 #pragma warning disable CS0649
+    [Inject] private UiManager _uiManager;
+    
     [SerializeField] private Button _closeButton;
-    [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] protected bool _withOverlay;
-    
-    
 #pragma warning restore CS0649
     
     protected virtual void Start()
@@ -35,5 +34,6 @@ public abstract class GenericWindow : MonoBehaviour
     protected virtual void OnDestroy()
     {
         _closeButton.onClick.RemoveAllListeners();
+        _uiManager.HideOverlay();
     }
 }

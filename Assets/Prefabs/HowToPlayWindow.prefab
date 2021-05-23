@@ -264,9 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 4027258905886689481}
-  _text: {fileID: 6387705812800053303}
-  _withOverlay: 1
-  _test: {fileID: 9148800664908116061}
+  _withOverlay: 0
 --- !u!1 &1608162544653025295
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,7 +400,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -9, y: -16.1}
-  m_SizeDelta: {x: 987.1499, y: 1754.9336}
+  m_SizeDelta: {x: 900, y: 1750}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4050388602520342105
 MonoBehaviour:
@@ -601,7 +599,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 3903011308971534549}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []

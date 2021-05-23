@@ -264,7 +264,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 4027258905886689481}
-  _text: {fileID: 6387705812800053303}
   _withOverlay: 1
 --- !u!1 &1608162544653025295
 GameObject:
@@ -400,7 +399,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 94.99}
-  m_SizeDelta: {x: 1297.3, y: 1142.87}
+  m_SizeDelta: {x: 900, y: 1100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &4050388602520342105
 MonoBehaviour:

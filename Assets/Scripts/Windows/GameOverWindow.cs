@@ -8,8 +8,6 @@ public class GameOverWindow : GenericWindow
     protected override void Start()
     {
         base.Start();
-        
-        ProveExistence();
     }
 
     protected override void OnButtonClose(Action callback)
@@ -20,10 +18,5 @@ public class GameOverWindow : GenericWindow
     public override void Setup()
     {
         transform.DOScale(Vector3.one, 0.3f).From(Vector3.zero);
-    }
-
-    private void ProveExistence()
-    {
-        Debug.Log("game over window, boom");
     }
 }
