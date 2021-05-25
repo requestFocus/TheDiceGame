@@ -77,7 +77,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba532c95a10a4ddf97e4b2435335f202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _addDiceImage: {fileID: 820245709178063961}
   _addDiceButton: {fileID: 820245709178063967}
+  _removeDiceImage: {fileID: 820245709403082071}
   _removeDiceButton: {fileID: 820245709403082069}
   _diceContainer: {fileID: 1591859445907673092}
 --- !u!1 &337759519043640519

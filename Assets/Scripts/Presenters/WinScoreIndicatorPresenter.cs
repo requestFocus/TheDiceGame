@@ -1,4 +1,5 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -8,43 +9,47 @@ using Zenject;
 public class WinScoreIndicatorPresenter : MonoBehaviour
 {
     private GameManager _gameManager;
-    
+
 #pragma warning disable
     [SerializeField] private TextMeshProUGUI _totalScoreText;
     [SerializeField] private Image _winIndicator;
 #pragma warning restore
-    
+
     [Inject]
     private void Construct(GameManager gameManager)
     {
         _gameManager = gameManager;
     }
-    
+
     private void Start()
     {
-        _gameManager.TossingDicesCompleted += UpdateWinScoreIndicator;
-        
+        _gameManager.DicesTossed += UpdateWinScoreIndicator;
+        _gameManager.TurnStarted += HideWinScoreIndicator;
+
         _totalScoreText.transform.localScale = Vector3.zero;
     }
 
-    private void UpdateWinScoreIndicator(int totalScore, int leftSliderValue, int rightSliderValue)
+    private void UpdateWinScoreIndicator(int totalScore, List<CellPresenter> selectedCellsPresenter)
     {
-        UpdateWinIndicatorColor(totalScore, leftSliderValue, rightSliderValue);
-        AnimateTotalScoreUpdate(totalScore, leftSliderValue, rightSliderValue);
+        UpdateWinIndicatorColor(totalScore, selectedCellsPresenter);
+        AnimateTotalScoreUpdate(totalScore, selectedCellsPresenter);
     }
 
-    private void UpdateWinIndicatorColor(int totalScore, int leftSliderValue, int rightSliderValue)
+    private void UpdateWinIndicatorColor(int totalScore, List<CellPresenter> selectedCellsPresenter)
     {
-        bool isWin = _gameManager.IsWin(leftSliderValue, rightSliderValue, totalScore);
-        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(leftSliderValue, rightSliderValue);
-        _winIndicator.color = isWin & isWithinWinningRange ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
+        bool isWin = IsWin(totalScore, selectedCellsPresenter);
+        _winIndicator.color = isWin ? new Color(0, 255, 0, 0.5f) : new Color(255, 0, 0, 0.5f);
     }
     
-    private void UpdateTotalScoreColor(int totalScore, int leftSliderValue, int rightSliderValue)
+    private void UpdateTotalScoreColor(int totalScore, List<CellPresenter> selectedCellsPresenter)
     {
-        bool isWin = _gameManager.IsWin(totalScore, leftSliderValue, rightSliderValue);
-        bool isWithinWinningRange = _gameManager.IsWithinWiningRange(leftSliderValue, rightSliderValue);
-        _totalScoreText.color = isWin & isWithinWinningRange ? new Color(0, 0.3f, 0, 0.25f) : new Color(0.3f, 0, 0, 0.25f);
+        bool isWin = IsWin(totalScore, selectedCellsPresenter);
+        _totalScoreText.color = isWin ? new Color(0, 0.3f, 0, 0.25f) : new Color(0.3f, 0, 0, 0.25f);
+    }
+    
+    private bool IsWin(int totalScore, List<CellPresenter> selectedCellsPresenters)
+    {
+        return selectedCellsPresenters.Select(cell => cell.GetCellId()).Contains(totalScore - 1);
     }
 
     private void UpdateTotalScoreText(int totalScore)
@@ -52,21 +57,27 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
         _totalScoreText.text = totalScore.ToString();
     }
 
-    private void AnimateTotalScoreUpdate(int totalScore, int leftSliderValue, int rightSliderValue)
+    private void AnimateTotalScoreUpdate(int totalScore, List<CellPresenter> selectedCellsPresenter)
     {
         Sequence seq = DOTween.Sequence();
         seq.Append(_totalScoreText.transform.DOScale(Vector3.zero, 0.1f))
             .InsertCallback(0.1f, () =>
             {
                 UpdateTotalScoreText(totalScore);
-                UpdateTotalScoreColor(totalScore, leftSliderValue, rightSliderValue);
+                UpdateTotalScoreColor(totalScore, selectedCellsPresenter);
             })
             .Insert(0.1f, _totalScoreText.transform.DOScale(Vector3.one, 0.1f))
             .Play();
     }
 
-    private void OnDestroy()
+    private void HideWinScoreIndicator()
     {
-        _gameManager.TossingDicesCompleted -= UpdateWinScoreIndicator;
+        _totalScoreText.text = "";
+    }
+
+private void OnDestroy()
+    {
+        _gameManager.DicesTossed -= UpdateWinScoreIndicator;
+        _gameManager.TurnStarted -= HideWinScoreIndicator;
     }
 }

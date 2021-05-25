@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Zenject;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
@@ -15,28 +15,28 @@ public class GameViewPresenter : MonoBehaviour
     [SerializeField] private GenericButton _goBackButton;
     [SerializeField] private GenericButton _helpButton;
     [SerializeField] private GenericButton _tossDicesButton;
+    [SerializeField] private Image _tossDicesImage;
     [SerializeField] private RectTransform _contentTransform;
-    [SerializeField] private BettingSliderPresenter _bettingSliderPresenter;
 #pragma warning restore CS0649
 
     private DicesManager _dicesManager;
     private GameManager _gameManager;
     private ButtonHelper _buttonHelper;
     private UiManager _uiManager;
-    private BettingSlider _bettingSlider;
+    private CellsManager _cellsManager;
 
-    private List<DicePresenter> _dicePresenters;
     private int _totalScore;
 
     [Inject]
     private void Construct(DicesManager dicesManager, GameManager gameManager, ButtonHelper buttonHelper,
-        UiManager uiManager, BettingSlider bettingSlider)
+        UiManager uiManager, CellsManager cellsManager)
     {
-        _dicesManager = dicesManager;
         _gameManager = gameManager;
-        _buttonHelper = buttonHelper;
+        _dicesManager = dicesManager;
+        _cellsManager = cellsManager;
         _uiManager = uiManager;
-        _bettingSlider = bettingSlider;
+        
+        _buttonHelper = buttonHelper;
     }
 
     private void Start()
@@ -48,6 +48,9 @@ public class GameViewPresenter : MonoBehaviour
         _helpButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_helpButton, () => { }));
 
         _tossDicesButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_tossDicesButton, TossDices));
+
+        ValidateTossButton();
+        _gameManager.CellTapped += ValidateTossButton;
     }
 
     private void GoBack()
@@ -62,23 +65,19 @@ public class GameViewPresenter : MonoBehaviour
 
     private async void TossDices()
     {
+        _gameManager.OnTurnStart();
+        
         DeleteOldDices();
+        _dicesManager.RemoveDices();
         ClearPreviouslyOccupiedPositions();
 
-        _dicePresenters = _dicesManager.CreateDices();
+        _dicesManager.CreateDices();
         await DistributeDices();
 
         AddDicesValues();
 
-        _gameManager.OnDicesToss(_totalScore, _bettingSlider.GetLeftSliderValue(),
-            _bettingSlider.GetRightSliderValue());
-
-        bool isWin = _gameManager.IsWin(_totalScore, _bettingSlider.GetLeftSliderValue(),
-            _bettingSlider.GetRightSliderValue());
-        bool isWithinWinningRange =
-            _gameManager.IsWithinWiningRange(_bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
-        _bettingSliderPresenter.UpdateWinningDot(isWin & isWithinWinningRange, _totalScore);
-
+        _gameManager.OnDicesToss(_totalScore, _cellsManager.GetSelectedCellsPresenters());
+        
         _gameManager.OnTurnEnd();
         
         if (!CanContinue())
@@ -90,7 +89,7 @@ public class GameViewPresenter : MonoBehaviour
     private void AddDicesValues()
     {
         _totalScore = 0;
-        foreach (var dice in _dicePresenters)
+        foreach (var dice in _dicesManager.GetDicesPresenters())
         {
             _totalScore += dice.GetDiceValue();
         }
@@ -102,7 +101,7 @@ public class GameViewPresenter : MonoBehaviour
         Rect contentRect = _contentTransform.rect;
         Sequence sequence = DOTween.Sequence();
         
-        foreach (DicePresenter dicePresenter in _dicePresenters)
+        foreach (DicePresenter dicePresenter in _dicesManager.GetDicesPresenters())
         {
             var targetDotsAmount = dicePresenter.GetGeneratedRandomId();
             Transform diceTransform = dicePresenter.transform;
@@ -152,6 +151,23 @@ public class GameViewPresenter : MonoBehaviour
     {
         return PlayerPrefs.GetInt("Balance") > 0;
     }
+
+    private void ValidateTossButton(List<CellPresenter> selectedCellsPresenters = null)
+    {
+        Color faded = new Color(_tossDicesImage.color.r, _tossDicesImage.color.g, _tossDicesImage.color.b, 0.3f);
+        Color full = new Color(_tossDicesImage.color.r, _tossDicesImage.color.g, _tossDicesImage.color.b, 1f);
+        
+        if (selectedCellsPresenters == null || selectedCellsPresenters.Count == 0)
+        {
+            _tossDicesImage.color = faded;
+            _tossDicesButton.interactable = false;
+        }
+        else
+        {
+            _tossDicesImage.color = full;
+            _tossDicesButton.interactable = true;
+        }
+    }
     
     private void OnDestroy()
     {
@@ -162,5 +178,7 @@ public class GameViewPresenter : MonoBehaviour
         _helpButton.onLongPress.RemoveAllListeners();
         
         _tossDicesButton.onClick.RemoveAllListeners();
+
+        _gameManager.CellTapped -= ValidateTossButton;
     }
 }

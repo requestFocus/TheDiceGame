@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Actual score
+  m_text: = Actual score
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 256c02d4a83d94654af9486d9e7069b2, type: 2}
   m_sharedMaterial: {fileID: -1332817805594953641, guid: 256c02d4a83d94654af9486d9e7069b2,
@@ -244,8 +244,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 288.8, y: 0}
-  m_SizeDelta: {x: 490.70715, y: 100}
+  m_AnchoredPosition: {x: 457.42, y: 0}
+  m_SizeDelta: {x: 153.47217, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9106368828404800668
 CanvasRenderer:
@@ -573,7 +573,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Potential win
+  m_text: = Potential win
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 256c02d4a83d94654af9486d9e7069b2, type: 2}
   m_sharedMaterial: {fileID: -1332817805594953641, guid: 256c02d4a83d94654af9486d9e7069b2,
@@ -779,7 +779,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dice amount
+  m_text: '* Dice amount'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 256c02d4a83d94654af9486d9e7069b2, type: 2}
   m_sharedMaterial: {fileID: -1332817805594953641, guid: 256c02d4a83d94654af9486d9e7069b2,
@@ -1135,8 +1135,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -268.93, y: 0}
-  m_SizeDelta: {x: 537.8682, y: 100}
+  m_AnchoredPosition: {x: -237.3, y: 0}
+  m_SizeDelta: {x: 601.12115, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3346866736309685095
 CanvasRenderer:
@@ -1165,7 +1165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Score minus Bet
+  m_text: = Score minus Bet
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 256c02d4a83d94654af9486d9e7069b2, type: 2}
   m_sharedMaterial: {fileID: -1332817805594953641, guid: 256c02d4a83d94654af9486d9e7069b2,
@@ -1555,8 +1555,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -268.93, y: 0}
-  m_SizeDelta: {x: 537.8682, y: 100}
+  m_AnchoredPosition: {x: -78.6, y: 0}
+  m_SizeDelta: {x: 918.5628, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1835456408204487450
 CanvasRenderer:
@@ -1585,7 +1585,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Range multiplier
+  m_text: '* Multiplier from selection'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 256c02d4a83d94654af9486d9e7069b2, type: 2}
   m_sharedMaterial: {fileID: -1332817805594953641, guid: 256c02d4a83d94654af9486d9e7069b2,
@@ -2316,8 +2316,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 241.6, y: 0}
-  m_SizeDelta: {x: 583.17944, y: 100}
+  m_AnchoredPosition: {x: 280.7, y: 0}
+  m_SizeDelta: {x: 505.04333, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7771431293603631400
 CanvasRenderer:
@@ -2561,7 +2561,7 @@ GameObject:
   - component: {fileID: 7771431294857752675}
   - component: {fileID: 7771431294857752672}
   m_Layer: 0
-  m_Name: BankPresenter
+  m_Name: Bank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2611,7 +2611,6 @@ MonoBehaviour:
   _gainAmountText: {fileID: 7771431293603631403}
   _mightWinAmountText: {fileID: 1812255260363361426}
   _multiplierAmountText: {fileID: 8835307991248422821}
-  _diceAmountText: {fileID: 4899996543361756139}
   _betRegulator: {fileID: 4923615230173497193}
   _betAmountText: {fileID: 7771431292991355593}
   _betRoundingButton: {fileID: 1179358065966216793}

@@ -5,18 +5,22 @@ public class GameConfig : ScriptableObject
 {
     [SerializeField] public int AmountOfDices = 2;
 
-    private int DiceSidesAmount = 6;
-    public float GetMaxSliderValue => AmountOfDices * DiceSidesAmount;
-
+    public int DiceSidesAmount = 6;
+    
     public int MinAmountOfDices = 1;
     public int MaxAmountOfDices = 3;
 
     public int BetBase = 1;
     
-    public int WinMultiplierForRangeZero = 4;
-    public int WinMultiplierForRangeOne = 3;
-    public int WinMultiplierForRangeTwo = 2;
-    public int WinMultiplierForRangeThree = 1;
+    public int WinMultiplierForNoSelection = 0;
+    public int WinMultiplierForOneSelected = 3;
+    public int WinMultiplierForTwoSelected = 2;
+    public int WinMultiplierForThreeSelected = 1;
 
-    public int WidestWinningRange = 3;
+    public int MaxSelectedCellsAmount = 3;
+    
+    public float GetMaxSliderValue => AmountOfDices * DiceSidesAmount;
+    public float GetLowestValueForCurrentDicesAmount => AmountOfDices;
+    public float GetHighestValueForCurrentDicesAmount => AmountOfDices * DiceSidesAmount;
+
 }

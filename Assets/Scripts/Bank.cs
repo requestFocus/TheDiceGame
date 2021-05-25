@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -15,46 +17,46 @@ public class Bank : IInitializable, IDisposable
     
     public void Initialize()
     {
-        _gameManager.TossingDicesCompleted += DeductBet;
-        _gameManager.TossingDicesCompleted += UpdateBank;
+        _gameManager.DicesTossed += DeductBet;
+        _gameManager.DicesTossed += UpdateBank;
     }
     
-    private void UpdateBank(int dicesSum, int leftBet, int rightBet)
+    private void UpdateBank(int dicesSum, List<CellPresenter> selectedCellsPresenters)
     {
         var currentBalance = PlayerPrefs.GetInt("Balance", 200);
-        var newBalance = currentBalance + CalculateOutcome(dicesSum, leftBet, rightBet);
+        var newBalance = currentBalance + CalculateOutcome(dicesSum, selectedCellsPresenters);
         PlayerPrefs.SetInt("Balance", newBalance);
     }
 
-    public int CalculateOutcome(int dicesSum, int leftBet, int rightBet)
+    public int CalculateOutcome(int dicesSum, List<CellPresenter> selectedCellPresenters)
     {
-        if (dicesSum < leftBet || dicesSum > rightBet)
+        if (!selectedCellPresenters.Select(cell => cell.GetCellId()).Contains(dicesSum - 1))
         {
             return 0;
         }
 
-        return CalculatePotentialOutcome(leftBet, rightBet);
+        return CalculatePotentialOutcome(selectedCellPresenters);
     }
 
-    public int CalculatePotentialOutcome(int leftBet, int rightBet)
+    public int CalculatePotentialOutcome(List<CellPresenter> selectedCellPresenters)
     {
-        return GetMultiplier(leftBet, rightBet) * _gameConfig.BetBase * _gameConfig.AmountOfDices;
+        return GetMultiplier(selectedCellPresenters) * _gameConfig.BetBase * _gameConfig.AmountOfDices;
     }
     
-    public int GetMultiplier(int leftBet, int rightBet)
+    public int GetMultiplier(List<CellPresenter> selectedCellPresenters)
     {
-        int range = rightBet - leftBet;
+        int range = selectedCellPresenters.Count;
 
         switch (range)
         {
             case 0:
-                return _gameConfig.WinMultiplierForRangeZero;
+                return _gameConfig.WinMultiplierForNoSelection;
             case 1:
-                return _gameConfig.WinMultiplierForRangeOne;
+                return _gameConfig.WinMultiplierForOneSelected;
             case 2:
-                return _gameConfig.WinMultiplierForRangeTwo;
+                return _gameConfig.WinMultiplierForTwoSelected;
             case 3:
-                return _gameConfig.WinMultiplierForRangeThree;
+                return _gameConfig.WinMultiplierForThreeSelected;
             default:
                 return 0;
         } 
@@ -80,18 +82,7 @@ public class Bank : IInitializable, IDisposable
         _gameConfig.BetBase = betAmount;
     }
     
-    public void UpdateBetValue(float value)
-    {
-        int betAmount = (int) value;
-        if (betAmount > PlayerPrefs.GetInt("Balance"))
-        {
-            betAmount = PlayerPrefs.GetInt("Balance");
-        }
-        
-        _gameConfig.BetBase = betAmount;
-    }
-    
-    private void DeductBet(int arg1, int arg2, int arg3)
+    private void DeductBet(int arg1, List<CellPresenter> selectedCellsPresenter)
     {
         var currentBalance = PlayerPrefs.GetInt("Balance");
         var newBalance = currentBalance - _gameConfig.BetBase;
@@ -100,7 +91,7 @@ public class Bank : IInitializable, IDisposable
 
     public void Dispose()
     {
-        _gameManager.TossingDicesCompleted -= DeductBet;
-        _gameManager.TossingDicesCompleted -= UpdateBank;
+        _gameManager.DicesTossed -= DeductBet;
+        _gameManager.DicesTossed -= UpdateBank;
     }
 }

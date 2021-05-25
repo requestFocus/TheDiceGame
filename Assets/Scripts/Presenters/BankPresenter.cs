@@ -1,15 +1,13 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Slider = UnityEngine.UI.Slider;
 
 public class BankPresenter : MonoBehaviour
 {
     private Bank _model;
     private GameManager _gameManager;
-    private BettingSlider _bettingSlider;
-    private GameConfig _gameConfig;
 
 #pragma warning disable CS0649
     [SerializeField] private TextMeshProUGUI _bankBalanceText;
@@ -17,36 +15,37 @@ public class BankPresenter : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _gainAmountText;
     [SerializeField] private TextMeshProUGUI _mightWinAmountText;
     [SerializeField] private TextMeshProUGUI _multiplierAmountText;
-    [SerializeField] private Slider _betRegulator;
     [SerializeField] private TextMeshProUGUI _betAmountText;
+    
+    [SerializeField] private Slider _betRegulator;
     [SerializeField] private Button _betRoundingButton; 
 #pragma warning restore CS0649
 
     [Inject]
-    private void Construct(Bank model, GameManager gameManager, BettingSlider bettingSlider, GameConfig gameConfig)
+    private void Construct(Bank model, GameManager gameManager)
     {
         _model = model;
         _gameManager = gameManager;
-        _bettingSlider = bettingSlider;
-        _gameConfig = gameConfig;
     }
 
     private void Start()
     {
         SetupPresenter();
+        ResetMultiplier();
+        ResetPotentialWinText();
 
-        _gameManager.DicesTossed += RefreshBalanceText; 
-        _gameManager.TossingDicesCompleted += UpdatePostTossOutcome; 
-        
-        _gameManager.SliderUpdated += UpdatePotentialWin;
-        _gameManager.SliderUpdated += UpdateMultiplier;
+        _gameManager.TurnEnded += RefreshBalanceText; 
+        _gameManager.DicesTossed += UpdatePostTossOutcome; 
+
+        _gameManager.CellTapped += UpdatePotentialWin;
+        _gameManager.CellTapped += UpdateMultiplier;
 
         _betRegulator.onValueChanged.AddListener(value =>
         {
             UpdateBetValue((int)value);
             RefreshBetText();
             RefreshBetRegulator();
-            UpdatePotentialWin(_bettingSlider.GetLeftSliderValue(), _bettingSlider.GetRightSliderValue());
+            UpdatePotentialWin();
         });
         
         _betRoundingButton.onClick.AddListener(OnBetRoundingClick);
@@ -56,7 +55,7 @@ public class BankPresenter : MonoBehaviour
     {
         RefreshBetText();
         RefreshBalanceText();
-        ResetChangeableValues();
+        ResetChangeableValuesTexts();
         RefreshBetRegulator();
     }
 
@@ -66,15 +65,15 @@ public class BankPresenter : MonoBehaviour
         _bankBalanceText.text = balance.ToString();
     }
     
-    private void RefreshBetText(float value = 0)
+    private void RefreshBetText()
     {
         var bet = _model.GetCurrentBet();
         _betAmountText.text = bet.ToString();
     }
 
-    private void UpdatePostTossOutcome(int totalScore, int leftSliderValue, int rightSliderValue)
+    private void UpdatePostTossOutcome(int totalScore, List<CellPresenter> selectedCellPresenter)
     {
-        var outcome = _model.CalculateOutcome(totalScore, leftSliderValue, rightSliderValue);
+        var outcome = _model.CalculateOutcome(totalScore, selectedCellPresenter);
         _outcomeAmountText.text = outcome.ToString();
         var gain = outcome - _model.GetCurrentBet();
         _gainAmountText.text = gain.ToString();
@@ -82,10 +81,20 @@ public class BankPresenter : MonoBehaviour
         RefreshBetRegulator();
     }
 
-    private void ResetChangeableValues() 
+    private void ResetChangeableValuesTexts()
     {
         _outcomeAmountText.text = "";
         _gainAmountText.text = "";
+    }
+    
+    private void ResetPotentialWinText()
+    {
+        _mightWinAmountText.text = "0";     // poprawić
+    }
+
+    private void ResetMultiplier()
+    {
+        _multiplierAmountText.text = "";
     }
 
     private void RefreshBetRegulator()
@@ -96,12 +105,20 @@ public class BankPresenter : MonoBehaviour
         _betRegulator.value = _model.GetCurrentBet();
     }
 
-    private void UpdatePotentialWin(int leftSliderValue, int rightSliderValue)
+    private void UpdatePotentialWin(List<CellPresenter> selectedCellPresenters = null)
     {
-        var possibleWinAmount = _model.CalculatePotentialOutcome(leftSliderValue, rightSliderValue);
-        _mightWinAmountText.text = possibleWinAmount.ToString();
+        if (selectedCellPresenters == null)
+        {
+            _mightWinAmountText.text = 0.ToString();
+        }
         
-        ResetChangeableValues();
+        if (selectedCellPresenters != null)
+        {
+            int possibleWinAmount = _model.CalculatePotentialOutcome(selectedCellPresenters);
+            _mightWinAmountText.text = possibleWinAmount.ToString();
+        }
+
+        ResetChangeableValuesTexts();
     }
 
     private void OnBetRoundingClick()
@@ -121,12 +138,20 @@ public class BankPresenter : MonoBehaviour
         RefreshBetRegulator();
     }
 
-    private void UpdateMultiplier(int leftSliderValue, int rightSliderValue)
+    private void UpdateMultiplier(List<CellPresenter> selectedCellPresenters = null)
     {
-        var multiplier = _model.GetMultiplier(leftSliderValue, rightSliderValue);
-        _multiplierAmountText.text = multiplier.ToString();
+        if (selectedCellPresenters == null)
+        {
+            _multiplierAmountText.text = 0.ToString();
+        }
 
-        ResetChangeableValues();
+        if (selectedCellPresenters != null)
+        {
+            int multiplier = _model.GetMultiplier(selectedCellPresenters);
+            _multiplierAmountText.text = multiplier.ToString();
+        }
+
+        ResetChangeableValuesTexts();
     }
 
     private void UpdateBetValue(int value)
@@ -137,11 +162,14 @@ public class BankPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
-        _gameManager.DicesTossed -= RefreshBalanceText; 
-        _gameManager.TossingDicesCompleted -= UpdatePostTossOutcome; 
+        _gameManager.TurnEnded -= RefreshBalanceText; 
+        _gameManager.DicesTossed -= UpdatePostTossOutcome; 
         
-        _gameManager.SliderUpdated -= UpdatePotentialWin;
-        _gameManager.SliderUpdated -= UpdateMultiplier;
+        _gameManager.CellTapped -= UpdatePotentialWin;
+        _gameManager.CellTapped -= UpdateMultiplier;
+        
+        _gameManager.DiceAmountChanged -= () => UpdatePotentialWin();
+        _gameManager.DiceAmountChanged -= () => UpdateMultiplier();
 
         _betRegulator.onValueChanged.RemoveAllListeners();
         

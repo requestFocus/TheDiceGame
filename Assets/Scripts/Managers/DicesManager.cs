@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 using Random = UnityEngine.Random;
 
 public class DicesManager
@@ -9,6 +8,7 @@ public class DicesManager
     private GameConfig _gameConfig;
 
     private List<Vector2> _occupied = new List<Vector2>();
+    private List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     private DicesManager(DicePresenter.Factory factory, GameConfig gameConfig)
     {
@@ -63,17 +63,23 @@ public class DicesManager
         return occupationStatus.Exists(status => status);
     }
 
-    public List<DicePresenter> CreateDices()
+    public void CreateDices()
     {
-        List<DicePresenter> dicePresenters = new List<DicePresenter>();
-
         for (int i = 0; i < _gameConfig.AmountOfDices; i++)
         {
             DicePresenter dice = _dicePresenterFactory.Create();
-            dicePresenters.Add(dice);
+            _dicePresenters.Add(dice);
         }
-        
-        return dicePresenters;
+    }
+
+    public void RemoveDices()
+    {
+        _dicePresenters.Clear();
+    }
+
+    public List<DicePresenter> GetDicesPresenters()
+    {
+        return _dicePresenters;
     }
 
     public void ClearOccupiedPositions()

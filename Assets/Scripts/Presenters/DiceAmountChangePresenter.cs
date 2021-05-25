@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,9 +9,12 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private GameConfig _gameConfig;
     private DiceAmountChange _model;
     private DicePresenter.Factory _dicePresenterFactory;
+    private GameManager _gameManager;
 
     #pragma warning disable
+    [SerializeField] private Image _addDiceImage;
     [SerializeField] private Button _addDiceButton;
+    [SerializeField] private Image _removeDiceImage;
     [SerializeField] private Button _removeDiceButton;
     [SerializeField] private RectTransform _diceContainer;
     #pragma warning restore
@@ -21,11 +22,13 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     [Inject]
-    private void Construct(GameConfig gameConfig, DiceAmountChange model, DicePresenter.Factory dicePresenterFactory)
+    private void Construct(GameConfig gameConfig, DiceAmountChange model, DicePresenter.Factory dicePresenterFactory,
+        GameManager gameManager)
     {
         _gameConfig = gameConfig;
         _model = model;
         _dicePresenterFactory = dicePresenterFactory;
+        _gameManager = gameManager;
     }
     
     private void Start()
@@ -33,10 +36,14 @@ public class DiceAmountChangePresenter : MonoBehaviour
         _addDiceButton.onClick.AddListener(AddDice);
         _removeDiceButton.onClick.AddListener(RemoveDice);
 
+        _gameManager.DiceAmountChanged += UpdateDiceAmountChangePresenters;
+
         for (int i = 0; i < _gameConfig.AmountOfDices; i++)
         {
             CreateDicePresenter();
         }
+        
+        ValidateView();
     }
 
     private void AddDice()
@@ -45,7 +52,9 @@ public class DiceAmountChangePresenter : MonoBehaviour
         {
             _model.AddDice();
             CreateDicePresenter();
-            UpdateAllOffBoardDicePresenters();
+            UpdateDiceAmountChangePresenters();
+
+            ValidateView();
         }
     }
 
@@ -55,8 +64,19 @@ public class DiceAmountChangePresenter : MonoBehaviour
         {
             _model.RemoveDice();
             DestroyDicePresenter();
-            UpdateAllOffBoardDicePresenters();
+            UpdateDiceAmountChangePresenters();
+            
+            ValidateView();
         }
+    }
+
+    private void ValidateView()
+    {
+        Color faded = new Color(_addDiceImage.color.r, _addDiceImage.color.g, _addDiceImage.color.b, 0.3f);
+        Color full = new Color(_addDiceImage.color.r, _addDiceImage.color.g, _addDiceImage.color.b, 1f);
+        
+        _addDiceImage.color = _dicePresenters.Count != _gameConfig.MaxAmountOfDices ? full : faded;
+        _removeDiceImage.color = _dicePresenters.Count != _gameConfig.MinAmountOfDices ? full : faded;
     }
 
     private void CreateDicePresenter()
@@ -77,7 +97,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
         _dicePresenters.RemoveAt(_dicePresenters.Count - 1);
     }
 
-    private void UpdateAllOffBoardDicePresenters()
+    private void UpdateDiceAmountChangePresenters()
     {
         var layoutGroup = _diceContainer.GetComponent<HorizontalLayoutGroup>();
         switch (_gameConfig.AmountOfDices)
@@ -98,5 +118,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
     {
         _addDiceButton.onClick.RemoveListener(AddDice);
         _removeDiceButton.onClick.RemoveListener(RemoveDice);
+        
+        _gameManager.DiceAmountChanged -= UpdateDiceAmountChangePresenters;
     }
 }

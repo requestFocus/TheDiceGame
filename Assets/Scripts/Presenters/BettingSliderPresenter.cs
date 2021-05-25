@@ -53,9 +53,9 @@ public class BettingSliderPresenter : MonoBehaviour
 
     private void UpdateBank(float leftValue, float rightValue)
     {
-        _gameManager.OnSliderUpdated((int)leftValue, (int)rightValue);
+        // _gameManager.OnSliderUpdated((int)leftValue, (int)rightValue);
     }
-
+    
     private void UpdateSliderValues(float leftValue, float rightValue)
     {
         _model.UpdateSliderValues((int)leftValue, (int)rightValue);
