@@ -17,8 +17,8 @@ public class Bank : IInitializable, IDisposable
     
     public void Initialize()
     {
-        _gameManager.DicesTossed += DeductBet;
-        _gameManager.DicesTossed += UpdateBank;
+        _gameManager.DicesDistributed += DeductBet;
+        _gameManager.DicesDistributed += UpdateBank;
     }
     
     private void UpdateBank(int dicesSum, List<CellPresenter> selectedCellsPresenters)
@@ -91,7 +91,7 @@ public class Bank : IInitializable, IDisposable
 
     public void Dispose()
     {
-        _gameManager.DicesTossed -= DeductBet;
-        _gameManager.DicesTossed -= UpdateBank;
+        _gameManager.DicesDistributed -= DeductBet;
+        _gameManager.DicesDistributed -= UpdateBank;
     }
 }

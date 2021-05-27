@@ -10,7 +10,7 @@ public class GameOverWindow : GenericWindow
         base.Start();
     }
 
-    protected override void OnButtonClose(Action callback)
+    protected override void OnButtonClose()
     {
         SceneManager.LoadScene("MenuScene");
     }

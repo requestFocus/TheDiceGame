@@ -13,14 +13,15 @@ public class GameViewInstaller : MonoInstaller
     {
         Container.Bind<DicesManager>().AsSingle();
         Container.Bind<GameManager>().AsSingle();
+        Container.BindInterfacesAndSelfTo<CellsManager>().AsSingle();
+        Container.Bind<UiManager>().FromComponentInNewPrefab(_uiManager).AsSingle();
+        
         Container.Bind<DiceAmountChange>().AsSingle();
         Container.Bind<Cell>().AsTransient();
-        Container.Bind<WindowsFactory>().AsSingle();
-        
-        Container.BindInterfacesAndSelfTo<CellsManager>().AsSingle();
         Container.BindInterfacesAndSelfTo<Bank>().AsSingle();
+        Container.Bind<BettingSystem>().AsSingle();
         
-        Container.Bind<UiManager>().FromComponentInNewPrefab(_uiManager).AsSingle();
+        Container.Bind<WindowsFactory>().AsSingle();
         
         Container.BindFactory<DicePresenter, DicePresenter.Factory>().FromComponentInNewPrefab(_dicePresenterPrefab);
         Container.BindFactory<CellPresenter, CellPresenter.Factory>().FromComponentInNewPrefab(_cellPresenterPrefab);

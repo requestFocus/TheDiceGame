@@ -41,7 +41,7 @@ public class CellsManager : IInitializable, IDisposable
         _gameManager.DiceAmountChanged += ClearSelectedCells;
         _gameManager.DiceAmountChanged += RefreshCellsButtonsInteractability;
 
-        _gameManager.DicesTossed += MarkWinningCell;
+        _gameManager.DicesDistributed += MarkWinningCell;
         _gameManager.TurnStarted += UnmarkWinningCell;
     }
 
@@ -70,13 +70,13 @@ public class CellsManager : IInitializable, IDisposable
         {
             cell.ChangeState();
             _selectedCellPresenters.Remove(cell);
-            _gameManager.OnCellTapped(_selectedCellPresenters);
+            _gameManager.OnCellTapped();
         }
         else if (!cell.GetSelectedState() && _selectedCellPresenters.Count < _gameConfig.MaxSelectedCellsAmount)
         {
            cell.ChangeState();
            _selectedCellPresenters.Add(cell);
-           _gameManager.OnCellTapped(_selectedCellPresenters);
+           _gameManager.OnCellTapped();
         }
     }
 
@@ -137,7 +137,7 @@ public class CellsManager : IInitializable, IDisposable
         _gameManager.DiceAmountChanged -= RefreshCellsButtonsInteractability;
         _gameManager.DiceAmountChanged -= ClearSelectedCells;
         
-        _gameManager.DicesTossed -= MarkWinningCell;
+        _gameManager.DicesDistributed -= MarkWinningCell;
         _gameManager.TurnStarted -= UnmarkWinningCell;
     }
 }

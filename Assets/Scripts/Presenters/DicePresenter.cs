@@ -20,7 +20,6 @@ public class DicePresenter : MonoBehaviour
 
     private const float _oneTurn = 0.2f;
 
-    private int _previousRandomId1 = 0;
     private int _previousRandomId2 = 0;
 
     private void Awake()
@@ -108,7 +107,6 @@ public class DicePresenter : MonoBehaviour
                         AnimateWidth(_animatedSides[0], 250, 0);
                         AnimateWidth(_animatedSides[1], 0, 250);
                         iterationNumber += 1;
-                        _previousRandomId1 = randomId1;
                         _previousRandomId2 = randomId2;
                     })
                 ;

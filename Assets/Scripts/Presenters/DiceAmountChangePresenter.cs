@@ -6,7 +6,6 @@ using Zenject;
 
 public class DiceAmountChangePresenter : MonoBehaviour
 {
-    private GameConfig _gameConfig;
     private DiceAmountChange _model;
     private DicePresenter.Factory _dicePresenterFactory;
     private GameManager _gameManager;
@@ -22,10 +21,9 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     [Inject]
-    private void Construct(GameConfig gameConfig, DiceAmountChange model, DicePresenter.Factory dicePresenterFactory,
+    private void Construct(DiceAmountChange model, DicePresenter.Factory dicePresenterFactory,
         GameManager gameManager)
     {
-        _gameConfig = gameConfig;
         _model = model;
         _dicePresenterFactory = dicePresenterFactory;
         _gameManager = gameManager;
@@ -38,7 +36,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
 
         _gameManager.DiceAmountChanged += UpdateDiceAmountChangePresenters;
 
-        for (int i = 0; i < _gameConfig.AmountOfDices; i++)
+        for (int i = 0; i < _model.GetCurrentAmountOfDices(); i++)
         {
             CreateDicePresenter();
         }
@@ -48,7 +46,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
 
     private void AddDice()
     {
-        if (_gameConfig.AmountOfDices < _gameConfig.MaxAmountOfDices)
+        if (_model.CanAddDice)
         {
             _model.AddDice();
             CreateDicePresenter();
@@ -60,7 +58,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
 
     private void RemoveDice()
     {
-        if (_gameConfig.AmountOfDices > _gameConfig.MinAmountOfDices)
+        if (_model.CanRemoveDice)
         {
             _model.RemoveDice();
             DestroyDicePresenter();
@@ -75,8 +73,8 @@ public class DiceAmountChangePresenter : MonoBehaviour
         Color faded = new Color(_addDiceImage.color.r, _addDiceImage.color.g, _addDiceImage.color.b, 0.3f);
         Color full = new Color(_addDiceImage.color.r, _addDiceImage.color.g, _addDiceImage.color.b, 1f);
         
-        _addDiceImage.color = _dicePresenters.Count != _gameConfig.MaxAmountOfDices ? full : faded;
-        _removeDiceImage.color = _dicePresenters.Count != _gameConfig.MinAmountOfDices ? full : faded;
+        _addDiceImage.color = _dicePresenters.Count != _model.GetMaxAmountOfDices() ? full : faded;
+        _removeDiceImage.color = _dicePresenters.Count != _model.GetMinAmountOfDices() ? full : faded;
     }
 
     private void CreateDicePresenter()
@@ -100,7 +98,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private void UpdateDiceAmountChangePresenters()
     {
         var layoutGroup = _diceContainer.GetComponent<HorizontalLayoutGroup>();
-        switch (_gameConfig.AmountOfDices)
+        switch (_model.GetCurrentAmountOfDices())
         {
             case 3:
                 layoutGroup.spacing = -40;

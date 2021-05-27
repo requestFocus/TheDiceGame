@@ -13,10 +13,4 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   AmountOfDices: 3
-  MinAmountOfDices: 1
-  MaxAmountOfDices: 3
-  BetBase: 200
-  WinMultiplierForRangeZero: 4
-  WinMultiplierForRangeOne: 3
-  WinMultiplierForRangeTwo: 2
-  WinMultiplierForRangeThree: 1
+  BetBase: 0

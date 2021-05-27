@@ -15,7 +15,7 @@ public class HowToPlayWindow : GenericWindow
         base.Start();
     }
 
-    protected override void OnButtonClose(Action callback)
+    protected override void OnButtonClose()
     {
         Destroy(gameObject);
     }

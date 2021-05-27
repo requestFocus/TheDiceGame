@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -23,17 +24,13 @@ public class GameViewPresenter : MonoBehaviour
     private GameManager _gameManager;
     private ButtonHelper _buttonHelper;
     private UiManager _uiManager;
-    private CellsManager _cellsManager;
-
-    private int _totalScore;
 
     [Inject]
     private void Construct(DicesManager dicesManager, GameManager gameManager, ButtonHelper buttonHelper,
-        UiManager uiManager, CellsManager cellsManager)
+        UiManager uiManager)
     {
         _gameManager = gameManager;
         _dicesManager = dicesManager;
-        _cellsManager = cellsManager;
         _uiManager = uiManager;
         
         _buttonHelper = buttonHelper;
@@ -49,8 +46,9 @@ public class GameViewPresenter : MonoBehaviour
 
         _tossDicesButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_tossDicesButton, TossDices));
 
-        ValidateTossButton();
+        ValidateTossButton(_gameManager.GetSelectedCellsPresenters());
         _gameManager.CellTapped += ValidateTossButton;
+        _gameManager.DiceAmountChanged += () => ValidateTossButton(_gameManager.GetSelectedCellsPresenters());
     }
 
     private void GoBack()
@@ -63,6 +61,7 @@ public class GameViewPresenter : MonoBehaviour
         var howToPlayWindow = _uiManager.ShowWindow<HowToPlayWindow>();
     }
 
+    // TODO: move to TossDicesPresenter/TossDices
     private async void TossDices()
     {
         _gameManager.OnTurnStart();
@@ -74,9 +73,7 @@ public class GameViewPresenter : MonoBehaviour
         _dicesManager.CreateDices();
         await DistributeDices();
 
-        AddDicesValues();
-
-        _gameManager.OnDicesToss(_totalScore, _cellsManager.GetSelectedCellsPresenters());
+        _gameManager.OnDicesDistributed();
         
         _gameManager.OnTurnEnd();
         
@@ -86,16 +83,7 @@ public class GameViewPresenter : MonoBehaviour
         }
     }
 
-    private void AddDicesValues()
-    {
-        _totalScore = 0;
-        foreach (var dice in _dicesManager.GetDicesPresenters())
-        {
-            _totalScore += dice.GetDiceValue();
-        }
-    }
-
-    // TODO: MOVE TO DICES MANAGER
+    // TODO: move to DicesManager
     private async UniTask DistributeDices()
     {
         Rect contentRect = _contentTransform.rect;
@@ -152,7 +140,7 @@ public class GameViewPresenter : MonoBehaviour
         return PlayerPrefs.GetInt("Balance") > 0;
     }
 
-    private void ValidateTossButton(List<CellPresenter> selectedCellsPresenters = null)
+    private void ValidateTossButton(List<CellPresenter> selectedCellsPresenters)
     {
         Color faded = new Color(_tossDicesImage.color.r, _tossDicesImage.color.g, _tossDicesImage.color.b, 0.3f);
         Color full = new Color(_tossDicesImage.color.r, _tossDicesImage.color.g, _tossDicesImage.color.b, 1f);
@@ -180,5 +168,8 @@ public class GameViewPresenter : MonoBehaviour
         _tossDicesButton.onClick.RemoveAllListeners();
 
         _gameManager.CellTapped -= ValidateTossButton;
+
+        Action unsubscribeFromValidateTossButton = () => ValidateTossButton(_gameManager.GetSelectedCellsPresenters());
+        _gameManager.DiceAmountChanged -= unsubscribeFromValidateTossButton;
     }
 }

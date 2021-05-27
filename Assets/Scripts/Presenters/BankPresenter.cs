@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,17 +36,22 @@ public class BankPresenter : MonoBehaviour
         ResetPotentialWinText();
 
         _gameManager.TurnEnded += RefreshBalanceText; 
-        _gameManager.DicesTossed += UpdatePostTossOutcome; 
+        _gameManager.DicesDistributed += UpdatePostTossOutcome; 
 
         _gameManager.CellTapped += UpdatePotentialWin;
         _gameManager.CellTapped += UpdateMultiplier;
+
+        Action subscribeToUpdatePotentialWin = () => UpdatePotentialWin(_gameManager.GetSelectedCellsPresenters());
+        _gameManager.DiceAmountChanged += subscribeToUpdatePotentialWin;
+        Action subscribeToUpdateMultiplier = () => UpdateMultiplier(_gameManager.GetSelectedCellsPresenters());
+        _gameManager.DiceAmountChanged += subscribeToUpdateMultiplier;
 
         _betRegulator.onValueChanged.AddListener(value =>
         {
             UpdateBetValue((int)value);
             RefreshBetText();
             RefreshBetRegulator();
-            UpdatePotentialWin();
+            UpdatePotentialWin(_gameManager.GetSelectedCellsPresenters());
         });
         
         _betRoundingButton.onClick.AddListener(OnBetRoundingClick);
@@ -105,7 +111,7 @@ public class BankPresenter : MonoBehaviour
         _betRegulator.value = _model.GetCurrentBet();
     }
 
-    private void UpdatePotentialWin(List<CellPresenter> selectedCellPresenters = null)
+    private void UpdatePotentialWin(List<CellPresenter> selectedCellPresenters)
     {
         if (selectedCellPresenters == null)
         {
@@ -138,7 +144,7 @@ public class BankPresenter : MonoBehaviour
         RefreshBetRegulator();
     }
 
-    private void UpdateMultiplier(List<CellPresenter> selectedCellPresenters = null)
+    private void UpdateMultiplier(List<CellPresenter> selectedCellPresenters)
     {
         if (selectedCellPresenters == null)
         {
@@ -163,13 +169,15 @@ public class BankPresenter : MonoBehaviour
     private void OnDestroy()
     {
         _gameManager.TurnEnded -= RefreshBalanceText; 
-        _gameManager.DicesTossed -= UpdatePostTossOutcome; 
+        _gameManager.DicesDistributed -= UpdatePostTossOutcome; 
         
         _gameManager.CellTapped -= UpdatePotentialWin;
         _gameManager.CellTapped -= UpdateMultiplier;
-        
-        _gameManager.DiceAmountChanged -= () => UpdatePotentialWin();
-        _gameManager.DiceAmountChanged -= () => UpdateMultiplier();
+
+        Action unsubscribeFromUpdatePotentialWin = () => UpdatePotentialWin(_gameManager.GetSelectedCellsPresenters());
+        _gameManager.DiceAmountChanged -= unsubscribeFromUpdatePotentialWin;
+        Action unsubcribeFromUpdateMultiplier = () => UpdateMultiplier(_gameManager.GetSelectedCellsPresenters());
+        _gameManager.DiceAmountChanged -= unsubcribeFromUpdateMultiplier;
 
         _betRegulator.onValueChanged.RemoveAllListeners();
         

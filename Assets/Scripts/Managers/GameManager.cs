@@ -3,20 +3,24 @@ using System.Collections.Generic;
 
 public class GameManager
 {
-    public event Action<int, List<CellPresenter>> DicesTossed;
+    private readonly CellsManager _cellsManager;
+    private readonly DicesManager _dicesManager;
+
+    public GameManager(CellsManager cellsManager, DicesManager dicesManager)
+    {
+        _cellsManager = cellsManager;
+        _dicesManager = dicesManager;
+    }
+
+    public event Action<int, List<CellPresenter>> DicesDistributed;
+    public event Action<List<CellPresenter>> CellTapped;
     public event Action TurnStarted;
     public event Action TurnEnded;
     public event Action DiceAmountChanged;
-    public event Action<List<CellPresenter>> CellTapped;
 
-    public void OnDicesToss(int totalScore, List<CellPresenter> selectedCellPresenters)
+    public void OnDicesDistributed()
     {
-        DicesTossed?.Invoke(totalScore, selectedCellPresenters);
-    }
-
-    public void OnTurnEnd()
-    {
-        TurnEnded?.Invoke();
+        DicesDistributed?.Invoke(_dicesManager.GetDicesSum(), _cellsManager.GetSelectedCellsPresenters());
     }
 
     public void OnTurnStart()
@@ -24,13 +28,23 @@ public class GameManager
         TurnStarted?.Invoke();
     }
     
+    public void OnTurnEnd()
+    {
+        TurnEnded?.Invoke();
+    }
+    
     public void OnDiceAmountChanged()
     {
         DiceAmountChanged?.Invoke();
     }
 
-    public void OnCellTapped(List<CellPresenter> selectedCellPresenters)
+    public void OnCellTapped()
     {
-        CellTapped?.Invoke(selectedCellPresenters);
+        CellTapped?.Invoke(_cellsManager.GetSelectedCellsPresenters());
+    }
+
+    public List<CellPresenter> GetSelectedCellsPresenters()
+    {
+        return _cellsManager.GetSelectedCellsPresenters();
     }
 }

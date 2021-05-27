@@ -16,6 +16,17 @@ public class DicesManager
         _gameConfig = gameConfig;
     }
 
+    public int GetDicesSum()
+    {
+        int sum = 0;
+        foreach (var dice in _dicePresenters)
+        {
+            sum += dice.GetDiceValue();
+        }
+
+        return sum;
+    }
+
     public Vector2 GetUniqueRandomPosition(float contentWidth, float contentHeight, float[] dimensions)
     {
         float x;

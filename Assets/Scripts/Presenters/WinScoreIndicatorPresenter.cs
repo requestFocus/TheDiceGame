@@ -23,7 +23,7 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
 
     private void Start()
     {
-        _gameManager.DicesTossed += UpdateWinScoreIndicator;
+        _gameManager.DicesDistributed += UpdateWinScoreIndicator;
         _gameManager.TurnStarted += HideWinScoreIndicator;
 
         _totalScoreText.transform.localScale = Vector3.zero;
@@ -77,7 +77,7 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
 
 private void OnDestroy()
     {
-        _gameManager.DicesTossed -= UpdateWinScoreIndicator;
+        _gameManager.DicesDistributed -= UpdateWinScoreIndicator;
         _gameManager.TurnStarted -= HideWinScoreIndicator;
     }
 }
