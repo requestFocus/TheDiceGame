@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   AmountOfDices: 3
-  BetBase: 0
+  BetBase: 1
