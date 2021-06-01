@@ -9,7 +9,7 @@ public class CellPresenter : MonoBehaviour
 #pragma warning disable CS0649
     [SerializeField] private Image _image;
     [SerializeField] private Image _winningIndicator;
-    [SerializeField] private Button _button;
+    [SerializeField] private SelectableButton _selectableButton;
     [SerializeField] private TextMeshProUGUI _cellIdText;
 
 #pragma warning restore CS0649
@@ -22,7 +22,7 @@ public class CellPresenter : MonoBehaviour
         _model = model;
     }
     
-    public Button Button => _button;
+    public SelectableButton SelectableButton => _selectableButton;
     public Image WinningIndicator => _winningIndicator;
     public TextMeshProUGUI CellIdText => _cellIdText;
     
@@ -63,7 +63,7 @@ public class CellPresenter : MonoBehaviour
 
     public void EnableInteractability()
     {
-        _button.interactable = true;
+        _selectableButton.interactable = true;
     }
 
     public void SetAsDisabled()
@@ -74,7 +74,7 @@ public class CellPresenter : MonoBehaviour
 
     public void DisableInteractability()
     {
-        _button.interactable = false;
+        _selectableButton.interactable = false;
     }
 
     public int GetCellId()
