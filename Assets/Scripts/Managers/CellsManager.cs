@@ -28,10 +28,8 @@ public class CellsManager : IInitializable, IDisposable
     {
         foreach (var cell in _cellPresenters)
         {
-            cell.Button.onClick.AddListener(() =>
-            {
-                ValidateCell(cell);
-            });
+            Action subscribeToValidateCell = () => { ValidateCell(cell); };
+            cell.SelectableButton.OnEnter += subscribeToValidateCell;
         }
 
         RefreshCellsButtonsInteractability();
@@ -66,13 +64,15 @@ public class CellsManager : IInitializable, IDisposable
 
     private void ValidateCell(CellPresenter cell)
     {
-        if (cell.GetSelectedState())
+        if (cell.GetSelectedState() && cell.SelectableButton.interactable)
         {
             cell.ChangeState();
             _selectedCellPresenters.Remove(cell);
             _gameManager.OnCellTapped();
         }
-        else if (!cell.GetSelectedState() && _selectedCellPresenters.Count < _gameConfig.MaxSelectedCellsAmount)
+        else if (!cell.GetSelectedState() 
+                 && _selectedCellPresenters.Count < _gameConfig.MaxSelectedCellsAmount
+                 && cell.SelectableButton.interactable)
         {
            cell.ChangeState();
            _selectedCellPresenters.Add(cell);
@@ -119,7 +119,7 @@ public class CellsManager : IInitializable, IDisposable
 
     private void UnmarkWinningCell()
     {
-        if (_winningCell != null && _winningCell.Button.interactable)
+        if (_winningCell != null && _winningCell.SelectableButton.interactable)
         {
             _winningCell.WinningIndicator.gameObject.SetActive(false);
             _winningCell.CellIdText.color = Color.black;
@@ -131,7 +131,8 @@ public class CellsManager : IInitializable, IDisposable
     {
         foreach (var cell in _cellPresenters)
         {
-            cell.Button.onClick.RemoveAllListeners();
+            Action unsubscribeFromValidateCell = () => { ValidateCell(cell); };
+            cell.SelectableButton.OnEnter -= unsubscribeFromValidateCell;
         }
         
         _gameManager.DiceAmountChanged -= RefreshCellsButtonsInteractability;

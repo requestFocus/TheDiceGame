@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SettingNewBankScene.unity
     guid: 4816ccb5a42904faeb380f07c8510495
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: d65239f0c055c456dbd17bbc50cccde4
   m_configObjects: {}

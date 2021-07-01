@@ -135,7 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _image: {fileID: 929625089958547488}
   _winningIndicator: {fileID: 6508693005143589833}
-  _button: {fileID: 9032326624372034628}
+  _selectableButton: {fileID: 2497510797616119533}
   _cellIdText: {fileID: 3389238371424288430}
 --- !u!1 &929625091543071277
 GameObject:
@@ -146,7 +146,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 929625091543071274}
-  - component: {fileID: 9032326624372034628}
+  - component: {fileID: 2497510797616119533}
   m_Layer: 0
   m_Name: CellButton
   m_TagString: Untagged
@@ -175,7 +175,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9032326624372034628
+--- !u!114 &2497510797616119533
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 929625091543071277}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 11d530055c65453e8e2b4579cf6b8522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:

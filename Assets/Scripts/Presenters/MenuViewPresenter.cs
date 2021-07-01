@@ -90,7 +90,7 @@ public class MenuViewPresenter : MonoBehaviour
         
         _helpButton.onClick.RemoveAllListeners();
         _helpButton.onLongPress.RemoveAllListeners();
-
+        
         if (_blinkAnimation.IsPlaying())
         {
             _blinkAnimation.Kill();

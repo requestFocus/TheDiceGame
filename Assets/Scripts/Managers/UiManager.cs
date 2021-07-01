@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -9,8 +7,6 @@ public class UiManager : MonoBehaviour
 {
 #pragma warning disable CS0649
     [SerializeField] private Image _overlay;
-    [SerializeField] private TextMeshProUGUI _inputBlockade;
-    [SerializeField] private List<GenericWindow> _windowPrefabs;
 #pragma warning restore CS0649
     
     private WindowsFactory _windowsFactory;
@@ -23,12 +19,13 @@ public class UiManager : MonoBehaviour
 
     private void Start()
     {
-        // TODO to nie może tak zostać, gdzieś to musi zostać wsadzone, żeby dało się to WCZYTAC
-        Dictionary<string, GenericWindow> prefabsDictionary = new Dictionary<string, GenericWindow>()
+        Dictionary<string, GenericWindow> prefabsDictionary = new Dictionary<string, GenericWindow>();
+        GenericWindow[] windows = Resources.LoadAll<GenericWindow>("Prefabs");
+
+        foreach (var prefab in windows)
         {
-            {"HowToPlayWindow", _windowPrefabs[0]},
-            {"GameOverWindow", _windowPrefabs[1]},
-        };
+            prefabsDictionary.Add(prefab.name, prefab);
+        }
         
         _windowsFactory.BindWindows(prefabsDictionary);
     }
@@ -38,16 +35,6 @@ public class UiManager : MonoBehaviour
         _overlay.gameObject.SetActive(false);
     }
 
-    public void DisableInputBlockade()
-    {
-        _inputBlockade.gameObject.SetActive(false);
-    }
-
-    public void EnableInputBlockade()
-    {
-        _inputBlockade.gameObject.SetActive(true);
-    }
-    
     public T ShowWindow<T>() where T : GenericWindow
     {
         var window = _windowsFactory.CreateWindow<T>();
