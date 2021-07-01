@@ -23,5 +23,4 @@ public class GameConfig : ScriptableObject
     public float GetMaxSliderValue => AmountOfDices * DiceSidesAmount;
     public float GetLowestValueForCurrentDicesAmount => AmountOfDices;
     public float GetHighestValueForCurrentDicesAmount => AmountOfDices * DiceSidesAmount;
-
 }

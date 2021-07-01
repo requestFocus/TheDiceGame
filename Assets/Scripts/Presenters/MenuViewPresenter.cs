@@ -12,8 +12,6 @@ public class MenuViewPresenter : MonoBehaviour
     [SerializeField] private GenericButton _setUpNewBalanceButton;
     [SerializeField] private GenericButton _quitButton;
     [SerializeField] private GenericButton _helpButton;
-
-    [SerializeField] private Button _testButton;
 #pragma warning restore
     
     private ButtonHelper _buttonHelper;
@@ -44,8 +42,6 @@ public class MenuViewPresenter : MonoBehaviour
 
         _playButton.gameObject.SetActive(PlayerPrefs.GetInt("Balance") > 0);
         AnimateBlink();
-        
-        _testButton.onClick.AddListener(() => SceneManager.LoadScene("Test"));
     }
 
     private void OnQuitClick()
@@ -95,8 +91,6 @@ public class MenuViewPresenter : MonoBehaviour
         _helpButton.onClick.RemoveAllListeners();
         _helpButton.onLongPress.RemoveAllListeners();
         
-        _testButton.onClick.RemoveListener(() => SceneManager.LoadScene("Test"));
-
         if (_blinkAnimation.IsPlaying())
         {
             _blinkAnimation.Kill();
