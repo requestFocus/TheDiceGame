@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using DG.Tweening;
-using ModestTree;
+﻿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Random = UnityEngine.Random;
 
 public class DicePresenter : MonoBehaviour
 {
@@ -16,6 +13,14 @@ public class DicePresenter : MonoBehaviour
     [SerializeField] private Transform _animatedSidesTransform;
 #pragma warning restore
 
+    private Dice _model;
+    
+    [Inject]
+    private void Construct(Dice model)
+    {
+        _model = model;
+    }
+    
     private int _drawnDiceId;
 
     private const float _oneTurn = 0.2f;
@@ -24,7 +29,7 @@ public class DicePresenter : MonoBehaviour
 
     private void Awake()
     {
-        _drawnDiceId = GetRandomDotsAmount();
+        _drawnDiceId = _model.GetRandomDotsAmount();
         _diceImage.sprite = GetDotsSprite(_drawnDiceId);
     }
 
@@ -32,11 +37,6 @@ public class DicePresenter : MonoBehaviour
     {
         return new[]
             {_diceImage.GetComponent<RectTransform>().rect.width, _diceImage.GetComponent<RectTransform>().rect.height};
-    }
-
-    private int GetRandomDotsAmount()
-    {
-        return Random.Range(0, 6);
     }
 
     public int GetDiceValue()
@@ -76,8 +76,8 @@ public class DicePresenter : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             int iterationNumber = i;
-            int randomId1 = GetRandomDotsAmount();
-            int randomId2 = GetRandomDotsAmount();
+            int randomId1 = _model.GetRandomDotsAmount();
+            int randomId2 = _model.GetRandomDotsAmount();
     
             sequence
                 .InsertCallback(_oneTurn * i, () =>

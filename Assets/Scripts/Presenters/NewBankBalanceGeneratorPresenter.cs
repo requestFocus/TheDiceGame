@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-public class SettingNewBankBalancePresenter : MonoBehaviour
+public class NewBankBalanceGeneratorPresenter : MonoBehaviour
 {
 #pragma warning disable
     [SerializeField] private GenericButton _playButton;
@@ -18,11 +18,13 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
     private int _newBankBalanceAmount;
     private Sequence _drawingBalanceAnimation;
 
+    private NewBankBalanceGenerator _model;
+
     [Inject]
-    private void Construct(ButtonHelper buttonHelper, Bank bank)
+    private void Construct(ButtonHelper buttonHelper, NewBankBalanceGenerator model)
     {
         _buttonHelper = buttonHelper;
-        _bank = bank;
+        _model = model;
     }
 
     private void Start()
@@ -33,17 +35,17 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
         _goBackButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_goBackButton, OnQuitClick));
         _goBackButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_goBackButton, () => { }));
         
-        SetUpNewBankBalance();
+        Setup();
     }
 
-    private void SetUpNewBankBalance()
+    private void Setup()
     {
         _playButton.interactable = false;
         
         AnimateNewBankBalanceDrawing().Play()
             .OnComplete(() =>
             {
-                PlayerPrefs.SetInt("Balance", _newBankBalanceAmount);
+                _model.SetNewBankBalance(_newBankBalanceAmount);
                 _playButton.interactable = true;    
             });
     }
@@ -56,7 +58,7 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
         {
             _drawingBalanceAnimation.AppendCallback(() =>
             {
-                _newBankBalanceAmount = Random.Range(200, 800);
+                _newBankBalanceAmount = _model.GenerateNewBankBalance();
                 _newBankBalance.text = _newBankBalanceAmount.ToString();
             });
             _drawingBalanceAnimation.AppendInterval(0.05f);
@@ -72,7 +74,6 @@ public class SettingNewBankBalancePresenter : MonoBehaviour
 
     private void OnPlayClick()
     {
-        _bank.UpdateBetValue(1);
         SceneManager.LoadScene("Scenes/GameplayScene");
     }
 

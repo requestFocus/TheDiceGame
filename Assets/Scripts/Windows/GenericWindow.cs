@@ -24,8 +24,6 @@ public abstract class GenericWindow : MonoBehaviour
     {
         transform.localScale = Vector3.zero;
         
-        // _closeButton.onClick.AddListener(OnButtonClose);
-        
         _closeButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_closeButton, OnButtonClose));
         _closeButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_closeButton, () => { }));
     }
@@ -44,6 +42,7 @@ public abstract class GenericWindow : MonoBehaviour
     protected virtual void OnDestroy()
     {
         _closeButton.onClick.RemoveAllListeners();
+        _closeButton.onLongPress.RemoveAllListeners();
         _uiManager.HideOverlay();
     }
 }

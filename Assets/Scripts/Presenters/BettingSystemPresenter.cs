@@ -3,38 +3,29 @@ using Zenject;
 
 public class BettingSystemPresenter : MonoBehaviour
 {
-    private CellsManager _cellsManager;
+    [SerializeField] private RectTransform _contentTransform; 
+    
     private BettingSystem _model;
     
     [Inject]
-    private void Construct(CellsManager cellsManager, BettingSystem model)
+    private void Construct(BettingCellsManager cellsManager, BettingSystem model)
     {
-        _cellsManager = cellsManager;
         _model = model;
     }
 
     private void Awake()
     {
-        CreateCellPresenters();
+        _model.CreateCellPresenters();
         AssignCellsToParentTransform();
-    }
-
-    private void CreateCellPresenters()
-    {
-        var amountOfCells = _model.GetMaxAmountOfCells();
-        for (int i = 0; i < amountOfCells; i++)
-        {
-            _cellsManager.CreateCellPresenter(i);
-        }
     }
 
     private void AssignCellsToParentTransform()
     {
-        foreach (var cell in _cellsManager.GetCellsPresenters())
+        foreach (var cell in _model.GetCellPresenters())
         {
             Transform cellTransform = cell.transform;
-            cellTransform.SetParent(transform);
-            cellTransform.localScale = Vector3.one;;
+            cellTransform.SetParent(_contentTransform);
+            cellTransform.localScale = Vector3.one;
         }
     }
 }

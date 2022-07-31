@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -81,6 +83,39 @@ public class DicesManager
             DicePresenter dice = _dicePresenterFactory.Create();
             _dicePresenters.Add(dice);
         }
+    }
+    
+    public async UniTask DistributeDices(RectTransform contentTransform)
+    {
+        Rect contentRect = contentTransform.rect;
+        Sequence sequence = DOTween.Sequence();
+        
+        foreach (DicePresenter dicePresenter in GetDicesPresenters())
+        {
+            var targetDotsAmount = dicePresenter.GetGeneratedRandomId();
+            Transform diceTransform = dicePresenter.transform;
+
+            Vector2 commonStartingPosition = new Vector3(contentRect.width, -contentRect.height);
+            Vector2 uniqueRandomLandingPosition = GetUniqueRandomPosition(contentRect.width,
+                contentRect.height, dicePresenter.GetDimensions());
+            
+            diceTransform.SetParent(contentTransform, true);
+            diceTransform.localScale = Vector3.one;
+            diceTransform.localPosition = commonStartingPosition;
+
+            float angle = Mathf.Atan2(commonStartingPosition.y - uniqueRandomLandingPosition.y, commonStartingPosition.x - uniqueRandomLandingPosition.x) * Mathf.Rad2Deg;
+            dicePresenter.GetDiceImage().transform.rotation = Quaternion.Euler (new Vector3(0f,0f,angle));
+            dicePresenter.GetAnimatedSidesContainerTransform().transform.rotation = Quaternion.Euler (new Vector3(0f,0f,angle));
+
+            sequence = DOTween.Sequence()
+                .Append(diceTransform.DOLocalMove(uniqueRandomLandingPosition, 1.2f)) // SET EASE
+                .InsertCallback(0f, () =>
+                {
+                    dicePresenter.AnimateDiceMovement(targetDotsAmount);
+                });
+        }
+
+        await sequence.Play().AsyncWaitForCompletion();
     }
 
     public void RemoveDices()

@@ -1,15 +1,9 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameOverWindow : GenericWindow
 {
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected override void OnButtonClose()
     {
         SceneManager.LoadScene("MenuScene");

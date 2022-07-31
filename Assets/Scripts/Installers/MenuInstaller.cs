@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class MenuViewInstaller : MonoInstaller
+public class MenuInstaller : MonoInstaller
 { 
 #pragma warning disable
     [SerializeField] private UiManager _uiManager;

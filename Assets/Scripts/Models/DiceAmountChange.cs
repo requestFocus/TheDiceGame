@@ -1,29 +1,28 @@
-using System;
 
 public class DiceAmountChange
 {
     private GameConfig _gameConfig;
-    private GameManager _gameManager;
+    private GameplayManager _gameplayManager;
 
     public bool CanAddDice => _gameConfig.AmountOfDices < _gameConfig.MaxAmountOfDices;
     public bool CanRemoveDice => _gameConfig.AmountOfDices > _gameConfig.MinAmountOfDices;
 
-    private DiceAmountChange(GameConfig gameConfig, GameManager gameManager)
+    private DiceAmountChange(GameConfig gameConfig, GameplayManager gameplayManager)
     {
         _gameConfig = gameConfig;
-        _gameManager = gameManager;
+        _gameplayManager = gameplayManager;
     }
     
     public void AddDice()
     {
         _gameConfig.AmountOfDices += 1;
-        _gameManager.OnDiceAmountChanged();
+        _gameplayManager.OnDiceAmountChanged();
     }
 
     public void RemoveDice()
     {
         _gameConfig.AmountOfDices -= 1;
-        _gameManager.OnDiceAmountChanged();
+        _gameplayManager.OnDiceAmountChanged();
     }
 
     public int GetCurrentAmountOfDices()

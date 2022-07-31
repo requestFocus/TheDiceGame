@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class GenericButton : Selectable, IPointerClickHandler
 {
-    private float holdTime = 0.5f;
+    private float _holdTime = 0.5f;
  
     public UnityEvent onLongPress = new UnityEvent();
     public UnityEvent onClick = new UnityEvent();
@@ -14,7 +14,7 @@ public class GenericButton : Selectable, IPointerClickHandler
     public override void OnPointerDown(PointerEventData eventData)
     {
         /* if pointer's down then it will invoke in holdTime seconds */
-        Invoke(nameof(OnLongPressAction), holdTime);
+        Invoke(nameof(OnLongPressAction), _holdTime);
     }
  
     public override void OnPointerUp(PointerEventData eventData)

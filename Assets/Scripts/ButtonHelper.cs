@@ -15,7 +15,7 @@ public class ButtonHelper
 
     private float _skipTo;
 
-    public void OnButtonClick(GenericButton button, Action callback)
+    public void OnButtonClick(GenericButton button, Action callback, bool instant = false)
     {
         if (_onButtonLongPressAnimation.IsActive())
         {
@@ -25,6 +25,11 @@ public class ButtonHelper
 
         button.interactable = false;
 
+        if (instant)
+        {
+            callback?.Invoke();
+        }
+        
         Image[] images = button.GetComponentsInChildren<Image>();
         
         _onButtonClickAnimation = DOTween.Sequence();
@@ -38,7 +43,11 @@ public class ButtonHelper
 
         _onButtonClickAnimation.Play().OnComplete(() =>
         {
-            callback?.Invoke();
+            if (!instant)
+            {
+                callback?.Invoke();
+            }
+
             button.interactable = true;
         }).OnKill(() => _onButtonClickAnimation = null);
     }

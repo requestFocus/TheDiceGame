@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class CellPresenter : MonoBehaviour
+public class BettingCellPresenter : MonoBehaviour
 {
 #pragma warning disable CS0649
     [SerializeField] private Image _image;
@@ -14,21 +16,27 @@ public class CellPresenter : MonoBehaviour
 
 #pragma warning restore CS0649
 
-    private Cell _model;
-
-    [Inject]
-    private void Construct(Cell model)
-    {
-        _model = model;
-    }
-    
     public SelectableButton SelectableButton => _selectableButton;
     public Image WinningIndicator => _winningIndicator;
     public TextMeshProUGUI CellIdText => _cellIdText;
     
+    private BettingCell _model;
+
+    [Inject]
+    private void Construct(int index, BettingCell model)
+    {
+        _model = model;
+        _model.SetCellId(index);
+    }
+
+    private void Start()
+    {
+        SetCellIdText();
+    }
+    
     public void ChangeState()
     {
-        if (!_model.GetSelectedState())
+        if (!_model.IsSelected())
         {
             SelectCell();
             _image.color = Color.red;
@@ -50,9 +58,9 @@ public class CellPresenter : MonoBehaviour
         _model.DeselectCell();
     }
 
-    public bool GetSelectedState()
+    public bool IsSelected()
     {
-        return _model.GetSelectedState();
+        return _model.IsSelected();
     }
 
     public void SetAsEnabled()
@@ -92,7 +100,7 @@ public class CellPresenter : MonoBehaviour
         _cellIdText.text = (_model.GetCellId() + 1).ToString();
     }
 
-    public class Factory : PlaceholderFactory<CellPresenter>
+    public class Factory : PlaceholderFactory<int, BettingCellPresenter>
     {
     }
 }

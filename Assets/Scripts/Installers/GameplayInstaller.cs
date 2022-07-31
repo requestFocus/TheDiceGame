@@ -1,29 +1,32 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
-public class GameViewInstaller : MonoInstaller
+public class GameplayInstaller : MonoInstaller
 { 
 #pragma warning disable
     [SerializeField] private DicePresenter _dicePresenterPrefab;
-    [SerializeField] private CellPresenter _cellPresenterPrefab;
+    [FormerlySerializedAs("_cellPresenterPrefab")] [SerializeField] private BettingCellPresenter _bettingCellPresenterPrefab;
     [SerializeField] private UiManager _uiManager;
 #pragma warning restore
     
     public override void InstallBindings()
     {
+        Container.Bind<GameplayPanel>().AsSingle();
         Container.Bind<DicesManager>().AsSingle();
-        Container.Bind<GameManager>().AsSingle();
-        Container.BindInterfacesAndSelfTo<CellsManager>().AsSingle();
+        Container.Bind<GameplayManager>().AsSingle();
+        Container.BindInterfacesAndSelfTo<BettingCellsManager>().AsSingle();
         Container.Bind<UiManager>().FromComponentInNewPrefab(_uiManager).AsSingle();
         
         Container.Bind<DiceAmountChange>().AsSingle();
-        Container.Bind<Cell>().AsTransient();
+        Container.Bind<BettingCell>().AsTransient();
+        Container.Bind<Dice>().AsSingle();
         Container.BindInterfacesAndSelfTo<Bank>().AsSingle();
         Container.Bind<BettingSystem>().AsSingle();
         
         Container.Bind<WindowsFactory>().AsSingle();
         
         Container.BindFactory<DicePresenter, DicePresenter.Factory>().FromComponentInNewPrefab(_dicePresenterPrefab);
-        Container.BindFactory<CellPresenter, CellPresenter.Factory>().FromComponentInNewPrefab(_cellPresenterPrefab);
+        Container.BindFactory<int, BettingCellPresenter, BettingCellPresenter.Factory>().FromComponentInNewPrefab(_bettingCellPresenterPrefab);
     }
 }

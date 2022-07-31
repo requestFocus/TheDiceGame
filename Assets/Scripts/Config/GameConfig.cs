@@ -21,6 +21,6 @@ public class GameConfig : ScriptableObject
     public readonly int MaxSelectedCellsAmount = 3;
     
     public float GetMaxSliderValue => AmountOfDices * DiceSidesAmount;
-    public float GetLowestValueForCurrentDicesAmount => AmountOfDices;
-    public float GetHighestValueForCurrentDicesAmount => AmountOfDices * DiceSidesAmount;
+    public float GetLowestPossibleBet => AmountOfDices;
+    public float GetHighestPossibleBet => AmountOfDices * DiceSidesAmount;
 }

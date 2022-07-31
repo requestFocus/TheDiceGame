@@ -1,4 +1,4 @@
-public class Cell
+public class BettingCell
 {
     private bool _isSelected;
     private int _cellId;
@@ -13,7 +13,7 @@ public class Cell
         _isSelected = false;
     }
 
-    public bool GetSelectedState()
+    public bool IsSelected()
     {
         return _isSelected;
     }

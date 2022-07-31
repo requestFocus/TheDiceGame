@@ -10,11 +10,6 @@ public class HowToPlayWindow : GenericWindow
     {
     }
     
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected override void OnButtonClose()
     {
         Destroy(gameObject);

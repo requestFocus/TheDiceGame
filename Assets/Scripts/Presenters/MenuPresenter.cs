@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
-public class MenuViewPresenter : MonoBehaviour
+public class MenuPresenter : MonoBehaviour
 {
 #pragma warning disable
     [SerializeField] private Image _blink;
@@ -18,6 +18,8 @@ public class MenuViewPresenter : MonoBehaviour
     private UiManager _uiManager;
     
     private Sequence _blinkAnimation;
+    
+    private const string BALANCE = "Balance";
 
     [Inject]
     private void Construct(ButtonHelper buttonHelper, UiManager uiManager)
@@ -40,7 +42,7 @@ public class MenuViewPresenter : MonoBehaviour
         _helpButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_helpButton, ShowHelp));
         _helpButton.onLongPress.AddListener(() => _buttonHelper.OnButtonLongPress(_helpButton, () => { }));
 
-        _playButton.gameObject.SetActive(PlayerPrefs.GetInt("Balance") > 0);
+        _playButton.gameObject.SetActive(PlayerPrefs.GetInt(BALANCE) > 0);
         AnimateBlink();
     }
 
@@ -60,12 +62,12 @@ public class MenuViewPresenter : MonoBehaviour
 
     private void OnSetUpNewBankClick()
     {
-        SceneManager.LoadScene("Scenes/SettingNewBankScene");
+        SceneManager.LoadScene("Scenes/NewBankBalanceGeneratorScene");
     }
     
     private void ShowHelp()
     {
-        var howToPlayWindow = _uiManager.ShowWindow<HowToPlayWindow>();
+        _uiManager.ShowWindow<HowToPlayWindow>();
     }
 
     private void AnimateBlink()
