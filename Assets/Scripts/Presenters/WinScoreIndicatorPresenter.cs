@@ -8,7 +8,7 @@ using Zenject;
 
 public class WinScoreIndicatorPresenter : MonoBehaviour
 {
-    private GameplayManager _gameplayManager;
+    private WinScoreIndicator _model;
 
 #pragma warning disable
     [SerializeField] private TextMeshProUGUI _totalScoreText;
@@ -16,14 +16,14 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
 #pragma warning restore
 
     [Inject]
-    private void Construct(GameplayManager gameplayManager)
+    private void Construct(WinScoreIndicator model)
     {
-        _gameplayManager = gameplayManager;
+        _model = model;
     }
 
     private void Start()
     {
-        _gameplayManager.DicesDistributed += UpdateWinScoreIndicator;
+        _model.DicesDistributedRedirect += UpdateWinScoreIndicator;
 
         _totalScoreText.transform.localScale = Vector3.zero;
     }
@@ -74,8 +74,8 @@ public class WinScoreIndicatorPresenter : MonoBehaviour
         _totalScoreText.text = "";
     }
 
-private void OnDestroy()
+    private void OnDestroy()
     {
-        _gameplayManager.DicesDistributed -= UpdateWinScoreIndicator;
+        _model.DicesDistributedRedirect -= UpdateWinScoreIndicator;
     }
 }

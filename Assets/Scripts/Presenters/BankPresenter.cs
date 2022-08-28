@@ -8,7 +8,6 @@ using Zenject;
 public class BankPresenter : MonoBehaviour
 {
     private Bank _model;
-    private GameplayManager _gameplayManager;
 
 #pragma warning disable CS0649
     [SerializeField] private TextMeshProUGUI _bankBalanceText;
@@ -23,10 +22,9 @@ public class BankPresenter : MonoBehaviour
 #pragma warning restore CS0649
 
     [Inject]
-    private void Construct(Bank model, GameplayManager gameplayManager)
+    private void Construct(Bank model)
     {
         _model = model;
-        _gameplayManager = gameplayManager;
     }
 
     private void Start()
@@ -35,20 +33,20 @@ public class BankPresenter : MonoBehaviour
         ResetMultiplier();
         ResetPotentialWinText();
 
-        _gameplayManager.DicesDistributed += UpdatePostTossOutcome; 
+        _model.DicesDistributedRedirect += UpdatePostTossOutcome; 
 
-        _gameplayManager.CellTapped += UpdatePotentialWin;
-        _gameplayManager.CellTapped += UpdateMultiplier;
+        _model.CellTappedRedirect += UpdatePotentialWin;
+        _model.CellTappedRedirect += UpdateMultiplier;
 
-        _gameplayManager.DiceAmountChanged += UpdatePotentialWin;
-        _gameplayManager.DiceAmountChanged += UpdateMultiplier;
+        _model.DiceAmountChangedRedirect += UpdatePotentialWin;
+        _model.DiceAmountChangedRedirect += UpdateMultiplier;
 
         _betRegulator.onValueChanged.AddListener(value =>
         {
             UpdateBetValue((int)value);
             RefreshBetText();
             RefreshBetRegulator();
-            UpdatePotentialWin(_gameplayManager.GetSelectedCellsPresenters());
+            UpdatePotentialWin(_model.GetSelectedCellsPresenters());
         });
         
         _betRoundingButton.onClick.AddListener(OnBetRoundingClick);
@@ -165,26 +163,16 @@ public class BankPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
-        _gameplayManager.DicesDistributed -= UpdatePostTossOutcome; 
+        _model.DicesDistributedRedirect -= UpdatePostTossOutcome; 
         
-        _gameplayManager.CellTapped -= UpdatePotentialWin;
-        _gameplayManager.CellTapped -= UpdateMultiplier;
+        _model.CellTappedRedirect -= UpdatePotentialWin;
+        _model.CellTappedRedirect -= UpdateMultiplier;
 
-        _gameplayManager.DiceAmountChanged -= UpdatePotentialWin;
-        _gameplayManager.DiceAmountChanged -= UpdateMultiplier;
+        _model.DiceAmountChangedRedirect -= UpdatePotentialWin;
+        _model.DiceAmountChangedRedirect -= UpdateMultiplier;
 
         _betRegulator.onValueChanged.RemoveAllListeners();
         
         _betRoundingButton.onClick.RemoveListener(OnBetRoundingClick);
-    }
-
-    private void UpdatePotentialWin()
-    {
-        UpdatePotentialWin(_gameplayManager.GetSelectedCellsPresenters());
-    }
-
-    private void UpdateMultiplier()
-    {
-        UpdateMultiplier(_gameplayManager.GetSelectedCellsPresenters());
     }
 }

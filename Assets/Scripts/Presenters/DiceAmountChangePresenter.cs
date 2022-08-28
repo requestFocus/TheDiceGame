@@ -8,7 +8,6 @@ public class DiceAmountChangePresenter : MonoBehaviour
 {
     private DiceAmountChange _model;
     private DicePresenter.Factory _dicePresenterFactory;
-    private GameplayManager _gameplayManager;
 
     #pragma warning disable
     [SerializeField] private Image _addDiceImage;
@@ -21,12 +20,10 @@ public class DiceAmountChangePresenter : MonoBehaviour
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     [Inject]
-    private void Construct(DiceAmountChange model, DicePresenter.Factory dicePresenterFactory,
-        GameplayManager gameplayManager)
+    private void Construct(DiceAmountChange model, DicePresenter.Factory dicePresenterFactory)
     {
         _model = model;
         _dicePresenterFactory = dicePresenterFactory;
-        _gameplayManager = gameplayManager;
     }
     
     private void Start()
@@ -34,7 +31,7 @@ public class DiceAmountChangePresenter : MonoBehaviour
         _addDiceButton.onClick.AddListener(AddDice);
         _removeDiceButton.onClick.AddListener(RemoveDice);
 
-        _gameplayManager.DiceAmountChanged += UpdateDiceAmountChangePresenters;
+        _model.DiceAmountChanged += UpdateDiceAmountChangePresenters;
 
         for (int i = 0; i < _model.GetCurrentAmountOfDices(); i++)
         {
@@ -117,6 +114,6 @@ public class DiceAmountChangePresenter : MonoBehaviour
         _addDiceButton.onClick.RemoveListener(AddDice);
         _removeDiceButton.onClick.RemoveListener(RemoveDice);
         
-        _gameplayManager.DiceAmountChanged -= UpdateDiceAmountChangePresenters;
+        _model.DiceAmountChanged -= UpdateDiceAmountChangePresenters;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -19,25 +18,22 @@ public class GameplayPanelPresenter : MonoBehaviour
     [SerializeField] private BankPresenter _bankPresenter;
 #pragma warning restore CS0649
 
-    private GameplayManager _gameplayManager;
     private ButtonHelper _buttonHelper;
     private UiManager _uiManager;
-    private BettingCellsManager _bettingCellsManager;
+    private BettingSystem _bettingSystem;
 
     private GameplayPanel _model;
     
     [Inject]
     private void Construct(GameplayPanel model, 
-        GameplayManager gameplayManager, 
         ButtonHelper buttonHelper,
-        BettingCellsManager bettingCellsManager,
-        UiManager uiManager)
+        UiManager uiManager,
+        BettingSystem bettingSystem)
     {
         _model = model;
         
-        _gameplayManager = gameplayManager;
         _uiManager = uiManager;
-        _bettingCellsManager = bettingCellsManager;
+        _bettingSystem = bettingSystem;
         
         _buttonHelper = buttonHelper;
     }
@@ -53,8 +49,8 @@ public class GameplayPanelPresenter : MonoBehaviour
         _tossDicesButton.onClick.AddListener(() => _buttonHelper.OnButtonClick(_tossDicesButton, Toss, true));
 
         ValidateTossButtonState(_model.GetSelectedCellsPresenters());
-        _gameplayManager.CellTapped += ValidateTossButtonState;
-        _gameplayManager.DiceAmountChanged += () => ValidateTossButtonState(_model.GetSelectedCellsPresenters());
+        _bettingSystem.CellTapped += ValidateTossButtonState;
+        _model.DiceAmountChangedRedirect += () => ValidateTossButtonState(_model.GetSelectedCellsPresenters());
     }
 
     private async void Toss()
@@ -74,7 +70,7 @@ public class GameplayPanelPresenter : MonoBehaviour
     private void OnTurnStart()
     {
         _winScoreIndicatorPresenter.HideWinScoreIndicator();
-        _bettingCellsManager.UnmarkWinningCell();
+        _bettingSystem.UnmarkWinningCell();
     }
 
     private void OnTurnEnd()
@@ -122,10 +118,9 @@ public class GameplayPanelPresenter : MonoBehaviour
         
         _tossDicesButton.onClick.RemoveAllListeners();
 
-        _gameplayManager.CellTapped -= ValidateTossButtonState;
-
+        _bettingSystem.CellTapped -= ValidateTossButtonState;
         void UnsubscribeFromValidateTossButton() => ValidateTossButtonState(_model.GetSelectedCellsPresenters());
-        _gameplayManager.DiceAmountChanged -= UnsubscribeFromValidateTossButton;
+        _model.DiceAmountChangedRedirect -= UnsubscribeFromValidateTossButton;
     }
 
     private void CheckBankForBankruptcy()

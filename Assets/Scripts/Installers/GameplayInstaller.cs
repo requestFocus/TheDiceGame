@@ -12,17 +12,16 @@ public class GameplayInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
-        Container.Bind<GameplayPanel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<GameplayPanel>().AsSingle();
         Container.Bind<DicesManager>().AsSingle();
-        Container.Bind<GameplayManager>().AsSingle();
-        Container.BindInterfacesAndSelfTo<BettingCellsManager>().AsSingle();
         Container.Bind<UiManager>().FromComponentInNewPrefab(_uiManager).AsSingle();
         
         Container.Bind<DiceAmountChange>().AsSingle();
         Container.Bind<BettingCell>().AsTransient();
         Container.Bind<Dice>().AsSingle();
         Container.BindInterfacesAndSelfTo<Bank>().AsSingle();
-        Container.Bind<BettingSystem>().AsSingle();
+        Container.BindInterfacesAndSelfTo<BettingSystem>().AsSingle();
+        Container.BindInterfacesAndSelfTo<WinScoreIndicator>().AsSingle();
         
         Container.Bind<WindowsFactory>().AsSingle();
         

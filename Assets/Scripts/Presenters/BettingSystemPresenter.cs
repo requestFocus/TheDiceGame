@@ -8,7 +8,7 @@ public class BettingSystemPresenter : MonoBehaviour
     private BettingSystem _model;
     
     [Inject]
-    private void Construct(BettingCellsManager cellsManager, BettingSystem model)
+    private void Construct(BettingSystem model)
     {
         _model = model;
     }

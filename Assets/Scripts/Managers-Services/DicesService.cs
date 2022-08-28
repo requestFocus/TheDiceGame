@@ -6,11 +6,11 @@ using Random = UnityEngine.Random;
 
 public class DicesManager
 {
-    private DicePresenter.Factory _dicePresenterFactory;
-    private GameConfig _gameConfig;
+    private readonly DicePresenter.Factory _dicePresenterFactory;
+    private readonly GameConfig _gameConfig;
 
-    private List<Vector2> _occupied = new List<Vector2>();
-    private List<DicePresenter> _dicePresenters = new List<DicePresenter>();
+    private readonly List<Vector2> _occupied = new List<Vector2>();
+    private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
     private DicesManager(DicePresenter.Factory factory, GameConfig gameConfig)
     {
@@ -29,7 +29,7 @@ public class DicesManager
         return sum;
     }
 
-    public Vector2 GetUniqueRandomPosition(float contentWidth, float contentHeight, float[] dimensions)
+    private Vector2 GetUniqueRandomPosition(float contentWidth, float contentHeight, float[] dimensions)
     {
         float x;
         float y;
@@ -123,7 +123,7 @@ public class DicesManager
         _dicePresenters.Clear();
     }
 
-    public List<DicePresenter> GetDicesPresenters()
+    private List<DicePresenter> GetDicesPresenters()
     {
         return _dicePresenters;
     }

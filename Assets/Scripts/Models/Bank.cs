@@ -7,20 +7,24 @@ using Zenject;
 public class Bank : IInitializable, IDisposable
 {
     private GameConfig _gameConfig;
-    private GameplayManager _gameplayManager;
     
     private const string BALANCE = "Balance";
+    
+    public event Action<List<BettingCellPresenter>> CellTappedRedirect;
+    public event Action<List<BettingCellPresenter>> DiceAmountChangedRedirect;
+    public event Action<int, List<BettingCellPresenter>> DicesDistributedRedirect;
 
-    private Bank(GameConfig gameConfig, GameplayManager gameplayManager)
+    public event Func<List<BettingCellPresenter>> SliderUpdated;
+
+    private Bank(GameConfig gameConfig)
     {
         _gameConfig = gameConfig;
-        _gameplayManager = gameplayManager;
     }
     
     public void Initialize()
     {
-        _gameplayManager.DicesDistributed += DeductBet;
-        _gameplayManager.DicesDistributed += UpdateBank;
+        DicesDistributedRedirect += DeductBet;
+        DicesDistributedRedirect += UpdateBank;
     }
     
     private void UpdateBank(int dicesSum, List<BettingCellPresenter> selectedCellsPresenters)
@@ -87,9 +91,29 @@ public class Bank : IInitializable, IDisposable
         PlayerPrefs.SetInt(BALANCE, newBalance);
     }
 
+    public void UpdatePotentialWin(List<BettingCellPresenter> selectedCellPresenters)
+    {
+        CellTappedRedirect?.Invoke(selectedCellPresenters);
+    }
+    
+    public void DiceAmountChanged(List<BettingCellPresenter> selectedCellPresenters)
+    {
+        DiceAmountChangedRedirect?.Invoke(selectedCellPresenters);
+    }
+
+    public void UpdatePostTossOutcome(int totalScore, List<BettingCellPresenter> selectedCellPresenter)
+    {
+        DicesDistributedRedirect?.Invoke(totalScore, selectedCellPresenter);
+    }
+
     public void Dispose()
     {
-        _gameplayManager.DicesDistributed -= DeductBet;
-        _gameplayManager.DicesDistributed -= UpdateBank;
+        DicesDistributedRedirect -= DeductBet;
+        DicesDistributedRedirect -= UpdateBank;
+    }
+
+    public List<BettingCellPresenter> GetSelectedCellsPresenters()
+    {
+        return SliderUpdated?.Invoke();
     }
 }
