@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+
 public class WinScoreIndicator
 {
     public event Action<int, List<BettingCellPresenter>> DicesDistributedRedirect;
