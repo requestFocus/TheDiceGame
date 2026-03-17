@@ -8,7 +8,7 @@ using Zenject;
 public class GameplayPanel : IInitializable, IDisposable
 {
     private readonly UiManager _uiManager;
-    private readonly DicesManager _dicesManager;
+    private readonly DicesService _dicesService;
     private readonly DiceAmountChange _diceAmountChange;
     private readonly BettingSystem _bettingSystem;
     private readonly Bank _bank;
@@ -20,14 +20,14 @@ public class GameplayPanel : IInitializable, IDisposable
     public event Action<int, List<BettingCellPresenter>> DicesDistributed;
 
     public GameplayPanel(UiManager uiManager,
-        DicesManager dicesManager,
+        DicesService dicesService,
         DiceAmountChange diceAmountChange,
         BettingSystem bettingSystem,
         Bank bank,
         WinScoreIndicator winScoreIndicator)
     {
         _uiManager = uiManager;
-        _dicesManager = dicesManager;
+        _dicesService = dicesService;
         _diceAmountChange = diceAmountChange;
         _bettingSystem = bettingSystem;
         _bank = bank;
@@ -90,19 +90,19 @@ public class GameplayPanel : IInitializable, IDisposable
     
     public void SetupDices()
     {
-        _dicesManager.RemoveDices();
+        _dicesService.RemoveDices();
         ClearPreviouslyOccupiedPositions();
-        _dicesManager.CreateDices();
+        _dicesService.CreateDices();
     }
     
     private void ClearPreviouslyOccupiedPositions()
     {
-        _dicesManager.ClearOccupiedPositions();
+        _dicesService.ClearOccupiedPositions();
     }
 
     public async UniTask DistributeDices(RectTransform contentTransform)
     {
-        await _dicesManager.DistributeDices(contentTransform);
+        await _dicesService.DistributeDices(contentTransform);
     }
     
     public bool CanContinue()
@@ -117,7 +117,7 @@ public class GameplayPanel : IInitializable, IDisposable
 
     public void OnDicesDistributed()
     {
-        DicesDistributed?.Invoke(_dicesManager.GetDicesSum(), _bettingSystem.GetSelectedCellsPresenters());
+        DicesDistributed?.Invoke(_dicesService.GetDicesSum(), _bettingSystem.GetSelectedCellsPresenters());
     }
 
     public void Dispose()

@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DicesManager
+public class DicesService
 {
     private readonly DicePresenter.Factory _dicePresenterFactory;
     private readonly GameConfig _gameConfig;
@@ -12,7 +12,7 @@ public class DicesManager
     private readonly List<Vector2> _occupied = new List<Vector2>();
     private readonly List<DicePresenter> _dicePresenters = new List<DicePresenter>();
 
-    private DicesManager(DicePresenter.Factory factory, GameConfig gameConfig)
+    private DicesService(DicePresenter.Factory factory, GameConfig gameConfig)
     {
         _dicePresenterFactory = factory;
         _gameConfig = gameConfig;

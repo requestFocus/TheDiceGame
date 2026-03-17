@@ -13,7 +13,7 @@ public class GameplayInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.BindInterfacesAndSelfTo<GameplayPanel>().AsSingle();
-        Container.Bind<DicesManager>().AsSingle();
+        Container.Bind<DicesService>().AsSingle();
         Container.Bind<UiManager>().FromComponentInNewPrefab(_uiManager).AsSingle();
         
         Container.Bind<DiceAmountChange>().AsSingle();
